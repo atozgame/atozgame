@@ -44,69 +44,70 @@ var app = {
     initialize: function() {
         this.bindEvents();
 		// get latest database
-		updateDatabase();
-		// back button clicks
-		$('.header-bar .back-btn').click( backToHome );
-		// change click event type for mobile devices
-		if ('ontouchstart' in document.documentElement) {
-			clickType = 'touchstart';
-		}
-		// init the game screen
-		var keys = '';
-		for ( var letter in letters ) {
-			var value = letters[letter];
-			if ( letter == 'Z' ) {
-				// clear
-				keys += '<div class="key key-alt" id="key-clear" data-key="clear"><span></span></div>';
+		updateDatabase( function() {
+			// back button clicks
+			$('.header-bar .back-btn').click( backToHome );
+			// change click event type for mobile devices
+			if ('ontouchstart' in document.documentElement) {
+				clickType = 'touchstart';
 			}
-			keys += '<div class="key letter-key" id="key-' + letter + '" data-key="' + letter + '"><div><em>' + value + '</em><span>' + letter + '</span></div></div>';
-			if ( letter == 'P' || letter == 'L' ) {
-				keys += '<br />';
+			// init the game screen
+			var keys = '';
+			for ( var letter in letters ) {
+				var value = letters[letter];
+				if ( letter == 'Z' ) {
+					// clear
+					keys += '<div class="key key-alt" id="key-clear" data-key="clear"><span></span></div>';
+				}
+				keys += '<div class="key letter-key" id="key-' + letter + '" data-key="' + letter + '"><div><em>' + value + '</em><span>' + letter + '</span></div></div>';
+				if ( letter == 'P' || letter == 'L' ) {
+					keys += '<br />';
+				}
+				if ( letter == 'M' ) {
+					// backspace
+					keys += '<div class="key key-alt" id="key-backspace" data-key="backspace"><span></span></div>';
+				}
 			}
-			if ( letter == 'M' ) {
-				// backspace
-				keys += '<div class="key key-alt" id="key-backspace" data-key="backspace"><span></span></div>';
-			}
-		}
-		keys += '<br />';
-		//keys += '<div class="key key-long" id="key-gimme" data-key="gimme" onclick="showHelpPanel();"><span class="gimme">Gimme!</span><div></div></div>';
-		keys += '<div class="key key-long" id="key-pass" data-key="pass" onclick="passWord();"><span>Pass!</span></div>';
-		keys += '<div class="key key-long" id="key-space" data-key="space"><span>Space</span></div>';
-		keys += '<div class="key key-long" id="key-enter" data-key="enter"><span>Enter</span><div></div></div>';
-		// other keys
-		$('#keyboard').append( '<div id="keyboardInner">' + keys + '</div>' );
-		$('#keyboard .key').bind( clickType, function() {
-			tapKey( $(this).data('key') );
+			keys += '<br />';
+			//keys += '<div class="key key-long" id="key-gimme" data-key="gimme" onclick="showHelpPanel();"><span class="gimme">Gimme!</span><div></div></div>';
+			keys += '<div class="key key-long" id="key-pass" data-key="pass" onclick="passWord();"><span>Pass!</span></div>';
+			keys += '<div class="key key-long" id="key-space" data-key="space"><span>Space</span></div>';
+			keys += '<div class="key key-long" id="key-enter" data-key="enter"><span>Enter</span><div></div></div>';
+			// other keys
+			$('#keyboard').append( '<div id="keyboardInner">' + keys + '</div>' );
+			$('#keyboard .key').bind( clickType, function() {
+				tapKey( $(this).data('key') );
+			} );
+			$('#keyboard .letter-key')
+				.bind( clickType, function() {
+					if ( gameEnabled ) {
+						$(this).addClass('key-down');
+					}
+				} );
+			$('#keyboard')
+				.bind( 'mouseup touchend', function() {
+					if ( gameEnabled ) {
+						$('.key-down',this).removeClass('key-down');
+					}
+				} );
+			// in-game helper click events
+			//$('#help-panel-icon-max-word').click( useMaxWordGimme );
+			//$('#help-panel-icon-freeze-time').click( useFreezeTimeGimme );
+			//$('#help-panel-icon-clue-letters').click( useClueLettersGimme );
+			// populate list of categories
+			db.transaction( function(tx) {
+				tx.executeSql( 'SELECT * FROM category ORDER BY title ASC', [], function( tx, results ) {
+					var len = results.rows.length, i;
+					for ( i = 0; i < len; i++ ){
+						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
+					}
+				} );
+			} );
+			// hide splash screen
+			setTimeout( function() {
+				changeScreen('intro');
+			}, 100 );
 		} );
-		$('#keyboard .letter-key')
-			.bind( clickType, function() {
-				if ( gameEnabled ) {
-					$(this).addClass('key-down');
-				}
-			} );
-		$('#keyboard')
-			.bind( 'mouseup touchend', function() {
-				if ( gameEnabled ) {
-					$('.key-down',this).removeClass('key-down');
-				}
-			} );
-		// in-game helper click events
-		//$('#help-panel-icon-max-word').click( useMaxWordGimme );
-		//$('#help-panel-icon-freeze-time').click( useFreezeTimeGimme );
-		//$('#help-panel-icon-clue-letters').click( useClueLettersGimme );
-		// populate list of categories
-		db.transaction( function(tx) {
-			tx.executeSql( 'SELECT * FROM category ORDER BY title ASC', [], function( tx, results ) {
-				var len = results.rows.length, i;
-				for ( i = 0; i < len; i++ ){
-					$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
-				}
-			} );
-		} );
-		// hide splash screen
-		setTimeout( function() {
-			changeScreen('intro');
-		}, 100 );
     },
     // Bind Event Listeners
     //
@@ -143,7 +144,7 @@ function setCurrentDBVersion( version ) {
 
 //setCurrentDBVersion(0);
 
-function updateDatabase() {
+function updateDatabase( callback ) {
 	// check to make sure the database is installed
 	if ( getCurrentDBVersion() < gameData.version ) {
 		db.transaction( function(tx) {
@@ -164,6 +165,7 @@ function updateDatabase() {
 			}
 			// update database version
 			setCurrentDBVersion( gameData.version );
+			callback();
 		} );
 	}
 	/*
