@@ -147,25 +147,18 @@ function setCurrentDBVersion( version ) {
 
 function updateDatabase( callback ) {
 	// check to make sure the database is installed
-	//if ( getCurrentDBVersion() < gameData.version ) {
+	if ( getCurrentDBVersion() < gameData.version ) {
 		db.transaction( function(tx) {
 			// Drop tables
-			tx.executeSql('DROP TABLE IF EXISTS category',[],function(){alert('drop cat success');},function(){alert('drop cat fail');});
-			tx.executeSql('DROP TABLE IF EXISTS word',[],function(){alert('drop word success');},function(){alert('drop word fail');});
+			tx.executeSql('DROP TABLE IF EXISTS category',[]);
+			tx.executeSql('DROP TABLE IF EXISTS word',[]);
 			// create the category table
-			tx.executeSql('CREATE TABLE category ( id unique, title )',[],function(){alert('create cat success');},function(){alert('create cat fail');});
+			tx.executeSql('CREATE TABLE category ( id unique, title )',[]);
 			// create the word table
-			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )',[],function(){alert('create word success');},function(){alert('ceate word fail');});
+			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )',[]);
 			// insert category data
 			for ( var c in gameData.categories ) {
-				//(function() {
-					var cat = gameData.categories[c].title;
-					tx.executeSql('INSERT INTO category ( id, title ) VALUES ( ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), cat ], function() {
-						alert('inserted ' + cat );
-					}, function(a,err) {
-						alert( err.message );
-					} );
-				//})();
+				tx.executeSql('INSERT INTO category ( id, title ) VALUES ( ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title ] );
 			}
 			// insert word data
 			for ( var w in gameData.words ) {
@@ -175,10 +168,9 @@ function updateDatabase( callback ) {
 			setCurrentDBVersion( gameData.version );
 			callback();
 		} );
-	//} else {
-	//	alert('no change');
-	//	callback();
-	//}
+	} else {
+		callback();
+	}
 	/*
 	var connection = 'wifi';
 	if ( connection != 'none' ) {
