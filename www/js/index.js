@@ -130,7 +130,12 @@ var app = {
 var db = openDatabase( 'atozgame', 1.0, 'A to Z Game', 1024 * 1024 * 2 );
 
 function getCurrentDBVersion() {
-	return window.localStorage.getItem('currentDBVersion') || 0;
+	var ver = window.localStorage.getItem('currentDBVersion');
+	if ( ver ) {
+		return ver;
+	} else {
+		return 0;
+	}
 }
 function setCurrentDBVersion( version ) {
 	window.localStorage.setItem( 'currentDBVersion', version );
