@@ -151,11 +151,11 @@ function updateDatabase( callback ) {
 		db.transaction( function(tx) {
 			// Drop tables
 			tx.executeSql('DROP TABLE IF EXISTS category',[],function(){alert('drop cat success');},function(){alert('drop cat fail');});
-			tx.executeSql('DROP TABLE IF EXISTS word',function(){alert('drop word success');},function(){alert('drop word fail');});
+			tx.executeSql('DROP TABLE IF EXISTS word',[],function(){alert('drop word success');},function(){alert('drop word fail');});
 			// create the category table
-			tx.executeSql('CREATE TABLE category ( id unique, title )',function(){alert('create cat success');},function(){alert('create cat fail');});
+			tx.executeSql('CREATE TABLE category ( id unique, title )',[],function(){alert('create cat success');},function(){alert('create cat fail');});
 			// create the word table
-			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )',function(){alert('create word success');},function(){alert('ceate word fail');});
+			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )',[],function(){alert('create word success');},function(){alert('ceate word fail');});
 			// insert category data
 			for ( var c in gameData.categories ) {
 				//(function() {
