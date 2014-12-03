@@ -150,8 +150,8 @@ function updateDatabase( callback ) {
 	//if ( getCurrentDBVersion() < gameData.version ) {
 		db.transaction( function(tx) {
 			// Drop tables
-			tx.executeSql('DROP TABLE category',[],function(){alert('drop cat success');},function(){alert('drop cat fail');});
-			tx.executeSql('DROP TABLE word',function(){alert('drop word success');},function(){alert('drop word fail');});
+			tx.executeSql('DROP TABLE IF EXISTS category',[],function(){alert('drop cat success');},function(){alert('drop cat fail');});
+			tx.executeSql('DROP TABLE IF EXISTS word',function(){alert('drop word success');},function(){alert('drop word fail');});
 			// create the category table
 			tx.executeSql('CREATE TABLE category ( id unique, title )',function(){alert('create cat success');},function(){alert('create cat fail');});
 			// create the word table
