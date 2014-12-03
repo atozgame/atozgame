@@ -150,19 +150,15 @@ function updateDatabase( callback ) {
 	if ( getCurrentDBVersion() < gameData.version ) {
 		db.transaction( function(tx) {
 			// Drop tables
-			alert(1);
 			tx.executeSql('DROP TABLE category');
-			alert(2);
 			tx.executeSql('DROP TABLE word');
-			alert(3);
 			// create the category table
 			tx.executeSql('CREATE TABLE category ( id unique, title )');
-			alert(4);
 			// create the word table
 			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )');
-			alert(5);
 			// insert category data
 			for ( var c in gameData.categories ) {
+				alert(gameData.categories[c].title);
 				(function() {
 					var cat = gameData.categories[c].title;
 					tx.executeSql('INSERT INTO category ( id, title ) VALUES ( ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), cat ], function() {
