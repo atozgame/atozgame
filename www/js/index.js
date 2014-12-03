@@ -101,12 +101,12 @@ var app = {
 					for ( i = 0; i < len; i++ ){
 						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
 					}
+					// hide splash screen
+					setTimeout( function() {
+						changeScreen('intro');
+					}, 100 );
 				} );
 			} );
-			// hide splash screen
-			setTimeout( function() {
-				changeScreen('intro');
-			}, 100 );
 		} );
     },
     // Bind Event Listeners
