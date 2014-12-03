@@ -167,6 +167,8 @@ function updateDatabase( callback ) {
 			setCurrentDBVersion( gameData.version );
 			callback();
 		} );
+	} else {
+		callback();
 	}
 	/*
 	var connection = 'wifi';
