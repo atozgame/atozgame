@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="uk.co.atozgame.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>AtoZGame</name>
+    <name>A to Z Game</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        Only the best game ever made, ever...
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
-        PhoneGap Team
+    <author email="info@atozgame.co.uk" href="http://www.atozgame.co.uk">
+        Lucian Interactive
     </author>
     <preference name="permissions" value="none" />
     <preference name="phonegap-version" value="3.5.0" />
