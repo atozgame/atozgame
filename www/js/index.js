@@ -147,7 +147,7 @@ function setCurrentDBVersion( version ) {
 
 function updateDatabase( callback ) {
 	// check to make sure the database is installed
-	if ( getCurrentDBVersion() < gameData.version ) {
+	//if ( getCurrentDBVersion() < gameData.version ) {
 		db.transaction( function(tx) {
 			// Drop tables
 			tx.executeSql('DROP TABLE category');
@@ -176,10 +176,10 @@ function updateDatabase( callback ) {
 			setCurrentDBVersion( gameData.version );
 			callback();
 		} );
-	} else {
-		alert('no change');
-		callback();
-	}
+	//} else {
+	//	alert('no change');
+	//	callback();
+	//}
 	/*
 	var connection = 'wifi';
 	if ( connection != 'none' ) {
