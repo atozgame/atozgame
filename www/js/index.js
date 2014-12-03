@@ -46,6 +46,7 @@ var app = {
     initialize: function() {
         this.bindEvents();
 		// get latest database
+		alert( 'db = ' + typeof db );
 		updateDatabase( function() {
 			// back button clicks
 			$('.header-bar .back-btn').click( backToHome );
@@ -97,8 +98,10 @@ var app = {
 			//$('#help-panel-icon-freeze-time').click( useFreezeTimeGimme );
 			//$('#help-panel-icon-clue-letters').click( useClueLettersGimme );
 			// populate list of categories
+			alert('here');
 			db.transaction( function(tx) {
 				tx.executeSql( 'SELECT * FROM category ORDER BY title ASC', [], function( tx, results ) {
+				alert('callback');
 					var len = results.rows.length, i;
 					for ( i = 0; i < len; i++ ){
 						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
@@ -146,8 +149,10 @@ function setCurrentDBVersion( version ) {
 
 function updateDatabase( callback ) {
 	// check to make sure the database is installed
+	alert('updateDatabase | ' + getCurrentDBVersion() + ' | ' + gameData.version );
 	if ( getCurrentDBVersion() < gameData.version ) {
 		db.transaction( function(tx) {
+			alert('updateDatabase callback');
 			// Drop tables
 			tx.executeSql('DROP TABLE category');
 			tx.executeSql('DROP TABLE word');
@@ -168,6 +173,7 @@ function updateDatabase( callback ) {
 			callback();
 		} );
 	} else {
+		alert('no change');
 		callback();
 	}
 	/*
