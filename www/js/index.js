@@ -46,7 +46,6 @@ var app = {
     initialize: function() {
         this.bindEvents();
 		// get latest database
-		alert( 'db = ' + typeof db );
 		updateDatabase( function() {
 			// back button clicks
 			$('.header-bar .back-btn').click( backToHome );
@@ -98,7 +97,6 @@ var app = {
 			//$('#help-panel-icon-freeze-time').click( useFreezeTimeGimme );
 			//$('#help-panel-icon-clue-letters').click( useClueLettersGimme );
 			// populate list of categories
-			alert('here');
 			db.transaction( function(tx) {
 				tx.executeSql( 'SELECT * FROM category ORDER BY title ASC', [], function( tx, results ) {
 				alert('callback');
@@ -149,10 +147,8 @@ function setCurrentDBVersion( version ) {
 
 function updateDatabase( callback ) {
 	// check to make sure the database is installed
-	alert('updateDatabase | ' + getCurrentDBVersion() + ' | ' + gameData.version );
 	if ( getCurrentDBVersion() < gameData.version ) {
 		db.transaction( function(tx) {
-			alert('updateDatabase callback');
 			// Drop tables
 			tx.executeSql('DROP TABLE category');
 			tx.executeSql('DROP TABLE word');
@@ -162,7 +158,14 @@ function updateDatabase( callback ) {
 			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )');
 			// insert category data
 			for ( var c in gameData.categories ) {
-				tx.executeSql('INSERT INTO category ( id, title ) VALUES ( ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title ] );
+				(function() {
+					var cat = gameData.categories[c].title;
+					tx.executeSql('INSERT INTO category ( id, title ) VALUES ( ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), cat ], function() {
+						alert('inserted ' + cat );
+					}, function(a,err) {
+						alert( err.message );
+					} );
+				})();
 			}
 			// insert word data
 			for ( var w in gameData.words ) {
