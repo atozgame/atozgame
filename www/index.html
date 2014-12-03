@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>A to Z Game</title>
+    </head>
+    <body>
+
+		<!-- SPLASH SCREEN -->
+        <div class="screen" id="screen-splash">
+			<div></div>
+        </div>
+		
+		<!-- INTRO SCREEN -->
+        <div class="screen" id="screen-intro">
+			<div id="intro-head">
+			</div>
+			<div id="intro-logo">
+				<div></div>
+			</div>
+			<div id="intro-buttons">
+				<div class="intro-text">
+					As easy as A B C . . .
+				</div>
+				<button id="intro-button-play" onclick="changeScreen('categories');">Let's Play!</button>
+				<!--<button id="intro-button-store" onclick="changeScreen('store');"><span class="gimme">Gimme!</span> Store</button>
+				<button id="intro-button-help" onclick="changeScreen('help');">Instructions</button>
+				<button id="intro-button-leaderboard" onclick="changeScreen('leaderboard');">Leaderboard</button>-->
+			</div>
+			<div class="footer">
+			</div>
+        </div>
+		
+		<!-- CATEGORIES SCREEN -->
+        <div class="screen" id="screen-categories">
+			<div id="categories-elements">
+				<div id="categories-header" class="header-bar">
+					<div class="header-bar-btn back-btn">Back</div>
+					<div class="header-bar-text">Categories</div>
+				</div>
+				<div class="intro-text">
+					Select a category...
+				</div>
+				<div id="category-list-container">
+					<div id="category-list">
+					</div>
+				</div>
+				<div id="category-button-container">
+					<button id="select-category-button" onclick="selectedCategory();">PLAY!</button>
+				</div>
+			</div>
+			<div id="game-countdown">3</div>
+        </div>
+		
+		<!-- GAME SCREEN -->
+        <div class="screen" id="screen-game">
+			<div id="game-elements">
+				<div id="game-header" class="header-bar">
+					<div id="game-header-btn" class="header-bar-btn" onclick="quitGame();">Quit</div>
+					<div id="game-category"></div>
+					<div id="game-timer">00:00.00</div>
+					<div id="game-score">
+						<div>Score</div>
+						<span>0</span>
+					</div>
+				</div>
+				<div id="keyboard-container">
+					<div id="entries-viewport">
+						<div id="entries"></div>
+					</div>
+					<div id="word-entry">
+						<div id="current-letter">A</div>
+						<div id="word"></div><div id="clear-word" onclick="clearWord();"></div>
+						<button onclick="submitWord();"><div></div></button>
+					</div>
+					<div id="keyboard"></div>
+				</div>
+				<div id="game-ad"></div>
+				<div id="help-panel">
+					<div class="help-panel-icon" id="help-panel-icon-max-word">
+						<div class="help-panel-indicator" id="help-panel-max-word">1</div>
+					</div>
+					<div class="help-panel-icon" id="help-panel-icon-freeze-time">
+						<div class="help-panel-indicator" id="help-panel-freeze-time">1</div>
+					</div>
+					<div class="help-panel-icon" id="help-panel-icon-clue-letters">
+						<div class="help-panel-indicator" id="help-panel-clue-letters">1</div>
+					</div>
+					<div id="help-panel-close" onclick="closeHelpPanel();"></div>
+				</div>
+			</div>
+			<div id="game-complete-panel">
+				<div id="game-complete-elements">
+					<h2>Well Done!</h2>
+					<div id="game-complete-score">
+						You scored <span></span> points!
+					</div>
+					<div id="game-complete-buttons">
+						<button id="game-complete-facebook-button" onclick="postScoreToFacebook();">Post to Facebook!</button>
+						<button id="game-complete-play-again-button" onclick="changeScreen('categories');">Play Again!</button>
+					</div>
+				</div>
+			</div>
+        </div>
+		
+		<!-- HELP SCREEN -->
+        <div class="screen" id="screen-help">
+			<div id="help-header" class="header-bar">
+				<div class="header-bar-btn back-btn">Back</div>
+				<div class="header-bar-text">Instructions</div>
+			</div>
+        </div>
+		
+		<!-- STORE SCREEN -->
+        <div class="screen" id="screen-store">
+			<div id="store-header" class="header-bar">
+				<div class="header-bar-btn back-btn">Back</div>
+				<div class="header-bar-text"><span class="gimme">Gimme!</span> Store</div>
+			</div>
+			<div class="intro-text">
+				Welcome to the Gimme Store...<br />
+				If you find yourself stuck on a letter, use a 'Gimme' to give you an in-game helping hand!
+			</div>
+			<div id="store-options">
+				<div class="store-option" id="store-option-max-word">
+					<div class="store-option-image"></div>
+					<div class="store-option-text">This Gimme will give you the MAXIMUM scoring word for<br />the given letter!</div>
+					<button>Buy 2 for &pound;0.69</button>
+				</div>
+				<div class="store-option" id="store-option-freeze-time">
+					<div class="store-option-image"></div>
+					<div class="store-option-text">This Brrrrrilliant Gimme will FREEZE TIME for 15 seconds! More time to think of a word!</div>
+					<button>Buy 4 for &pound;0.69</button>
+				</div>
+				<div class="store-option" id="store-option-clue-letters">
+					<div class="store-option-image"></div>
+					<div class="store-option-text">Need a little help? This Gimme fills in few letters to give you a helpful word CLUE!</div>
+					<button>Buy 3 for &pound;0.69</button>
+				</div>
+			</div>
+			<div id="store-inventory">
+				Here's what you currently have...
+				<div id="store-inventory-items">
+					<div id="store-inventory-max-word">x2</div>
+					<div id="store-inventory-freeze-time">x1</div>
+					<div id="store-inventory-clue-letters">x0</div>
+				</div>
+			</div>
+			<div class="footer-container">
+				<div class="footer">
+				</div>
+			</div>
+        </div>
+		
+		<!-- LEADERBOARD SCREEN -->
+        <div class="screen" id="screen-leaderboard">
+			<div id="leaderboard-header" class="header-bar">
+				<div class="header-bar-btn back-btn">Back</div>
+				<div class="header-bar-text">Leaderboard</div>
+			</div>
+        </div>
+		
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+        <!--<script type="text/javascript" src="js/dictionaries.js"></script>-->
+        <script type="text/javascript" src="js/data.js"></script>
+        <script type="text/javascript" src="js/stopwatch.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/iscroll.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+		
+    </body>
+</html>
