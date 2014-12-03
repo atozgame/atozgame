@@ -39,6 +39,8 @@ letters['B'] = 5;
 letters['N'] = 2;
 letters['M'] = 2;
 
+var db = openDatabase( 'atozgame', 1.0, 'A to Z Game', 1024 * 1024 * 2 );
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -127,8 +129,6 @@ var app = {
     receivedEvent: function(id) {
     }
 };
-
-var db = openDatabase( 'atozgame', 1.0, 'A to Z Game', 1024 * 1024 * 2 );
 
 function getCurrentDBVersion() {
 	var ver = window.localStorage.getItem('currentDBVersion');
