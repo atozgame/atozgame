@@ -1,4 +1,5 @@
 var ENDPOINT_URL = 'http://atozgame.co.uk/gameservice.php';
+var testing = true;
 var categories = [];
 //var currentCategory = 'Animals';
 var currentCategoryId = 0;
@@ -99,7 +100,6 @@ var app = {
 			// populate list of categories
 			db.transaction( function(tx) {
 				tx.executeSql( 'SELECT * FROM category ORDER BY title ASC', [], function( tx, results ) {
-				alert('callback');
 					var len = results.rows.length, i;
 					for ( i = 0; i < len; i++ ){
 						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
@@ -139,6 +139,7 @@ function getCurrentDBVersion() {
 		return 0;
 	}
 }
+
 function setCurrentDBVersion( version ) {
 	window.localStorage.setItem( 'currentDBVersion', version );
 }
@@ -156,6 +157,8 @@ function updateDatabase( callback ) {
 			tx.executeSql('CREATE TABLE category ( id unique, title )',[]);
 			// create the word table
 			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )',[]);
+			// create high score table if necessary
+			tx.executeSql('CREATE TABLE IF NOT EXISTS highscores ( id unique, category_id, score )',[]);
 			// insert category data
 			for ( var c in gameData.categories ) {
 				tx.executeSql('INSERT INTO category ( id, title ) VALUES ( ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title ] );
@@ -501,13 +504,17 @@ function getNextLetter() {
 	db.transaction( function(tx) {
 		tx.executeSql( 'SELECT COUNT(id) AS letterExists FROM word WHERE category_id = ? AND word LIKE ?', [ currentCategoryId, nextLetter+'%' ], function( tx, results ) {
 			currentLetter = nextLetter;
-			if ( results.rows.item(0).letterExists ) {
-				$('#current-letter').html( nextLetter );
+			if ( testing && ( nextLetter == 'C' ) ) {
+				gameFinished();
 			} else {
-				if ( nextLetter == 'Z' ) {
-					gameFinished();
+				if ( results.rows.item(0).letterExists ) {
+					$('#current-letter').html( nextLetter );
 				} else {
-					getNextLetter();
+					if ( nextLetter == 'C' ) {
+						gameFinished();
+					} else {
+						getNextLetter();
+					}
 				}
 			}
 		} );
@@ -516,14 +523,30 @@ function getNextLetter() {
 
 function gameFinished() {
 	gameEnabled = false;
-	$('#game-complete-score span').text( currentScore );
-	if ( parseInt( currentScore, 10 ) == 0 ) {
-		$('#game-complete-elements h2').html('Errr...');
-	} else {
-		$('#game-complete-elements h2').html('Well Done!');
-	}
-	fadeOut('#game-elements');
-	$('#game-complete-panel').show();
+	// see if this is a new high score
+	db.transaction( function(tx) {
+		tx.executeSql( 'SELECT score FROM highscores WHERE category_id = ?', [ currentCategoryId ], function( tx, results ) {
+			var newHighScore = false;
+			currentScore = parseInt( currentScore, 10 );
+			if ( results.rows.length == 0 ) {
+				newHighScore = true;
+				tx.executeSql( 'INSERT INTO highscores ( score, category_id ) VALUES ( ?, ? )', [ currentScore, currentCategoryId ] );
+			} else if ( currentScore > parseInt( results.rows.item(0).score, 10 ) ) {
+				newHighScore = true;
+				tx.executeSql( 'UPDATE highscores SET score = ? WHERE category_id = ?', [ currentScore, currentCategoryId ] );
+			}
+			$('#game-complete-score span').text( currentScore );
+			if ( newHighScore ) {
+				$('#game-complete-elements h2').html('New High Score!');
+			} else if ( currentScore == 0 ) {
+				$('#game-complete-elements h2').html('Errr...');
+			} else {
+				$('#game-complete-elements h2').html('Well Done!');
+			}
+			fadeOut('#game-elements');
+			$('#game-complete-panel').show();
+		} );	
+	} );
 }
 
 function quitGame() {
@@ -549,6 +572,9 @@ function changeScreen( screen ) {
 			fadeIn('#categories-elements');
 			categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false, snap: 'div' } );
 			break;
+		case 'highscores':
+			initHighScoreScreen();
+			break;
 	}
 }
 
@@ -566,6 +592,8 @@ function startGame() {
 	getNextLetter();
 	fadeIn('#game-elements');
 	$('#game-complete-panel').hide();
+	$('#facebookSharedMsg').hide();
+	$('#game-complete-facebook-button').show();
 	setTimeout( function() {
 		gameEntriesScroller = new iScroll( 'entries-viewport', { hScrollbar: false, vScrollbar: false } );
 	}, 500 );
@@ -577,7 +605,20 @@ function backToHome() {
 }
 
 function postScoreToFacebook() {
-	alert('doesn\'t work yet!');
+	getCurrentCategory( function( category ) {
+		window.plugins.socialsharing.shareViaFacebook(
+			'I just scored ' + currentScore + ' on the ' + category.title + ' category! #AtoZGame',
+			null,
+			null,
+			function() {
+				$('#facebookSharedMsg').html('Shared!').show();
+				$('#game-complete-facebook-button').hide();
+			},
+			function() {
+				$('#facebookSharedMsg').html('Share failed :(').show();
+			}
+		);
+	} );
 }
 
 String.prototype.pad = function(l, s, t){
@@ -586,3 +627,30 @@ String.prototype.pad = function(l, s, t){
         + 1).join(s)).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2))
         + this + s.substr(0, l - t) : this;
 };
+
+function initHighScoreScreen() {
+	db.transaction( function(tx) {
+		tx.executeSql( 'SELECT category.title, COALESCE( highscores.score, 0 ) AS highscore FROM category LEFT JOIN highscores ON category.id = highscores.category_id', [], function( tx, results ) {
+			var html = 	'<table cellspacing="0" cellpadding="0">' +
+						'	<tr>' +
+						'		<th>Category</th>' +
+						'		<th class="highscore">High Score</th>' +
+						'	</tr>';
+			if ( results.rows.length > 0 ) {
+				for ( var i = 0; i < results.rows.length; i++ ) {
+					html +=	'	<tr>' + 
+							'		<td class="category">' + results.rows.item(i).title + '</td>' +
+							'		<td class="highscore">' + results.rows.item(i).highscore + '</td>' +
+							'	</tr>';
+				}
+			} else {
+				html +=	'	<tr>' + 
+						'		<td colspan="2">No scores found</td>' +
+						'	</tr>';
+			}
+			html += '</table>';
+			console.log(html);
+			$('#highscoresTable').html( html );
+		} );
+	} );
+}

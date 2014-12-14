@@ -29,6 +29,7 @@
 					As easy as A B C . . .
 				</div>
 				<button id="intro-button-play" onclick="changeScreen('categories');">Let's Play!</button>
+				<button id="intro-button-highscores" onclick="changeScreen('highscores');">View High Scores</button>
 				<!--<button id="intro-button-store" onclick="changeScreen('store');"><span class="gimme">Gimme!</span> Store</button>
 				<button id="intro-button-help" onclick="changeScreen('help');">Instructions</button>
 				<button id="intro-button-leaderboard" onclick="changeScreen('leaderboard');">Leaderboard</button>-->
@@ -103,6 +104,7 @@
 					</div>
 					<div id="game-complete-buttons">
 						<button id="game-complete-facebook-button" onclick="postScoreToFacebook();">Post to Facebook!</button>
+						<div id="facebookSharedMsg">Shared!</div>
 						<button id="game-complete-play-again-button" onclick="changeScreen('categories');">Play Again!</button>
 					</div>
 				</div>
@@ -116,6 +118,15 @@
 				<div class="header-bar-text">Instructions</div>
 			</div>
         </div>
+		
+		<!-- HIGH SCORES SCREEN -->
+		<div class="screen" id="screen-highscores">
+			<div id="highscores-header" class="header-bar">
+				<div class="header-bar-btn back-btn">Back</div>
+				<div class="header-bar-text">High scores</div>
+			</div>
+			<div id="highscoresTable"></div>
+		</div>
 		
 		<!-- STORE SCREEN -->
         <div class="screen" id="screen-store">
