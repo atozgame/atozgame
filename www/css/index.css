@@ -1031,10 +1031,10 @@ body, input, button {
 }
 #highscoresTable table th, #highscoresTable table td {
 	padding: 8px;
-	font-size: 18px;
+	font-size: 16px;
 	text-align: left;
 }
-#highscoresTable table .highscore {
+#highscoresTable table .highscore, #highscoresTable table .time_taken {
 	text-align: center;
 	width: 35%;
 }

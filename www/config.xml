@@ -25,7 +25,7 @@
     <preference name="android-minSdkVersion" value="7" />
     <preference name="android-installLocation" value="auto" />
 	<preference name="EnableViewportScale" value="true" />
-	<preference name="DisallowOverscroll" value="false" />
+	<preference name="DisallowOverscroll" value="true" />
 	
     <gap:plugin name="org.apache.cordova.battery-status" />
     <gap:plugin name="org.apache.cordova.camera" />

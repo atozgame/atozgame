@@ -159,6 +159,7 @@ function updateDatabase( callback ) {
 			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )',[]);
 			// create high score table if necessary
 			tx.executeSql('CREATE TABLE IF NOT EXISTS highscores ( id unique, category_id, score )',[]);
+			tx.executeSql('ALTER TABLE highscores ADD COLUMN seconds_taken');
 			// insert category data
 			for ( var c in gameData.categories ) {
 				tx.executeSql('INSERT INTO category ( id, title ) VALUES ( ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title ] );
@@ -449,7 +450,7 @@ function doSubmitWord( word ) {
 					}
 					addWordToList( word, score );
 				}, function( tx, e ) {
-					console.dir( e );
+					//console.dir( e );
 				} );
 			} );
 		} else {
@@ -522,18 +523,25 @@ function getNextLetter() {
 }
 
 function gameFinished() {
+	timer.stop();
 	gameEnabled = false;
 	// see if this is a new high score
 	db.transaction( function(tx) {
-		tx.executeSql( 'SELECT score FROM highscores WHERE category_id = ?', [ currentCategoryId ], function( tx, results ) {
+		tx.executeSql( 'SELECT score, seconds_taken FROM highscores WHERE category_id = ?', [ currentCategoryId ], function( tx, results ) {
 			var newHighScore = false;
 			currentScore = parseInt( currentScore, 10 );
+			var secondsTaken = timer.duration();
 			if ( results.rows.length == 0 ) {
 				newHighScore = true;
-				tx.executeSql( 'INSERT INTO highscores ( score, category_id ) VALUES ( ?, ? )', [ currentScore, currentCategoryId ] );
+				tx.executeSql( 'INSERT INTO highscores ( score, seconds_taken, category_id ) VALUES ( ?, ?, ? )', [ currentScore, secondsTaken, currentCategoryId ] );
+			} else if ( currentScore == parseInt( results.rows.item(0).score, 10 ) ) {
+				if ( secondsTaken < parseInt( results.rows.item(0).seconds_taken, 10 ) ) {
+					newHighScore = true;
+					tx.executeSql( 'UPDATE highscores SET score = ?, seconds_taken = ? WHERE category_id = ?', [ currentScore, secondsTaken, currentCategoryId ] );
+				}
 			} else if ( currentScore > parseInt( results.rows.item(0).score, 10 ) ) {
 				newHighScore = true;
-				tx.executeSql( 'UPDATE highscores SET score = ? WHERE category_id = ?', [ currentScore, currentCategoryId ] );
+				tx.executeSql( 'UPDATE highscores SET score = ?, seconds_taken = ? WHERE category_id = ?', [ currentScore, secondsTaken, currentCategoryId ] );
 			}
 			$('#game-complete-score span').text( currentScore );
 			if ( newHighScore ) {
@@ -630,18 +638,30 @@ String.prototype.pad = function(l, s, t){
         + this + s.substr(0, l - t) : this;
 };
 
+function convertSecondsToTime( seconds ) {
+	if ( seconds ) {
+		var minutes = Math.floor( ( seconds % 3600 ) / 60 );
+		var seconds = Math.floor( seconds % 60 );
+		return minutes + ':' + seconds.toString().pad( 2, '0', 0 );
+	} else {
+		return '-';
+	}
+}
+
 function initHighScoreScreen() {
 	db.transaction( function(tx) {
-		tx.executeSql( 'SELECT category.title, COALESCE( highscores.score, 0 ) AS highscore FROM category LEFT JOIN highscores ON category.id = highscores.category_id', [], function( tx, results ) {
+		tx.executeSql( 'SELECT category.title, COALESCE( highscores.score, 0 ) AS highscore, COALESCE( highscores.seconds_taken, 0 ) AS seconds_taken FROM category LEFT JOIN highscores ON category.id = highscores.category_id', [], function( tx, results ) {
 			var html = 	'<table cellspacing="0" cellpadding="0">' +
 						'	<tr>' +
 						'		<th>Category</th>' +
+						'		<th class="time_taken">Time</th>' +
 						'		<th class="highscore">High Score</th>' +
 						'	</tr>';
 			if ( results.rows.length > 0 ) {
 				for ( var i = 0; i < results.rows.length; i++ ) {
 					html +=	'	<tr>' + 
 							'		<td class="category">' + results.rows.item(i).title + '</td>' +
+							'		<td class="time_taken">' + convertSecondsToTime( results.rows.item(i).seconds_taken ) + '</td>' +
 							'		<td class="highscore">' + results.rows.item(i).highscore + '</td>' +
 							'	</tr>';
 				}
@@ -651,7 +671,6 @@ function initHighScoreScreen() {
 						'	</tr>';
 			}
 			html += '</table>';
-			console.log(html);
 			$('#highscoresTable').html( html );
 		} );
 	} );
