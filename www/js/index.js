@@ -610,9 +610,11 @@ function postScoreToFacebook() {
 			'I just scored ' + currentScore + ' on the ' + category.title + ' category! #AtoZGame',
 			null,
 			null,
-			function() {
-				$('#facebookSharedMsg').html('Shared!').show();
-				$('#game-complete-facebook-button').hide();
+			function( shared ) {
+				if ( shared ) {
+					$('#facebookSharedMsg').html('Shared!').show();
+					$('#game-complete-facebook-button').hide();
+				}
 			},
 			function() {
 				$('#facebookSharedMsg').html('Share failed :(').show();
