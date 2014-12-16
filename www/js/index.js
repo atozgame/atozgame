@@ -1,5 +1,5 @@
 var ENDPOINT_URL = 'http://atozgame.co.uk/gameservice.php';
-var testing = true;
+var testing = false;
 var categories = [];
 //var currentCategory = 'Animals';
 var currentCategoryId = 0;
