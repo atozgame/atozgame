@@ -60,7 +60,7 @@ var app = {
 				var value = letters[letter];
 				if ( letter == 'Z' ) {
 					// clear
-					keys += '<div class="key key-alt" id="key-clear" data-key="clear"><span></span></div>';
+					keys += '<div class="key letter-key" id="key-hyphen" data-key="hyphen"><div><em>0</em><span>-</span></div></div>';
 				}
 				keys += '<div class="key letter-key" id="key-' + letter + '" data-key="' + letter + '"><div><em>' + value + '</em><span>' + letter + '</span></div></div>';
 				if ( letter == 'P' || letter == 'L' ) {
@@ -158,8 +158,9 @@ function updateDatabase( callback ) {
 			// create the word table
 			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )',[]);
 			// create high score table if necessary
-			tx.executeSql('CREATE TABLE IF NOT EXISTS highscores ( id unique, category_id, score )',[]);
-			tx.executeSql('ALTER TABLE highscores ADD COLUMN seconds_taken');
+			tx.executeSql('CREATE TABLE IF NOT EXISTS highscores ( id unique, category_id, score, seconds_taken )',[]);
+			// any ALTER statements must be wrapped in "if ( getCurrentDBVersion() < xx ) {"
+			// tx.executeSql('ALTER TABLE highscores ADD COLUMN seconds_taken',[]);
 			// insert category data
 			for ( var c in gameData.categories ) {
 				tx.executeSql('INSERT INTO category ( id, title ) VALUES ( ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title ] );
@@ -363,6 +364,10 @@ function tapKey( key ) {
 			case 'clear':
 				clearWord();
 				return;
+			case 'hyphen':
+				word += '-';
+				updateWord( word );
+				return;
 			default:
 				word += key;
 				updateWord( word );
@@ -440,7 +445,9 @@ function doSubmitWord( word ) {
 		word = word.toUpperCase();
 		if ( word.substr(0,1) == currentLetter ) {
 			db.transaction( function(tx) {
-				tx.executeSql( 'SELECT score FROM word WHERE category_id = ? AND word = ?', [ currentCategoryId, word ], function( tx, results ) {
+				word = word.replace(/ /g,'');
+				word = word.replace(/-/g,'');
+				tx.executeSql( 'SELECT score FROM word WHERE category_id = ? AND REPLACE( REPLACE( word, " ", "" ), "-", "" ) = ?', [ currentCategoryId, word ], function( tx, results ) {
 					var score = 0;
 					if ( results.rows.length > 0 ) {
 						if ( results.rows.item(0).score ) {
@@ -511,7 +518,7 @@ function getNextLetter() {
 				if ( results.rows.item(0).letterExists ) {
 					$('#current-letter').html( nextLetter );
 				} else {
-					if ( nextLetter == 'C' ) {
+					if ( nextLetter == 'Z' ) {
 						gameFinished();
 					} else {
 						getNextLetter();
