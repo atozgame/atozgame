@@ -21,9 +21,8 @@
  * under the License.
  *
 */
-alert('revmob.js 1');
+
 (function(cordova) {
-alert('revmob.js 2');
 
 	var exec = require('cordova/exec'),
 		service = 'RevMobPlugin';
@@ -65,10 +64,6 @@ alert('revmob.js 2');
 		}
 	};
 
-alert('revmob.js 3');
 	module.exports = RevMob;
-alert('revmob.js 4');
 
 })(window.cordova || window.Cordova || window.Phonegap || window.phonegap || window.PhoneGap);
-
-alert('revmob.js 5');
