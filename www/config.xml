@@ -49,7 +49,10 @@
     <gap:plugin name="org.apache.cordova.splashscreen" />
 	
 	<gap:plugin name="nl.x-services.plugins.socialsharing" />
-	<gap:plugin name="com.phonegap.plugins.revmob" />
+	
+	<feature name="RevMobPlugin">
+		<param name="ios-package" value="RevMobPlugin" />
+	</feature>
 	
 	<gap:config-file platform="ios" parent="UIViewControllerBasedStatusBarAppearance" overwrite="true">
 		<false/>
