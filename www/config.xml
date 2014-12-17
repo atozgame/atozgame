@@ -50,10 +50,6 @@
 	
 	<gap:plugin name="nl.x-services.plugins.socialsharing" />
 	
-	<feature name="RevMobPlugin">
-		<param name="ios-package" value="RevMobPlugin" />
-	</feature>
-	
 	<gap:config-file platform="ios" parent="UIViewControllerBasedStatusBarAppearance" overwrite="true">
 		<false/>
 	</gap:config-file>
