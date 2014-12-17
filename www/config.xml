@@ -10,7 +10,7 @@
 	
     <preference name="permissions" value="none" />
     <preference name="phonegap-version" value="3.5.0" />
-    <preference name="orientation" value="default" />
+    <preference name="orientation" value="portrait" />
     <preference name="target-device" value="universal" />
     <preference name="fullscreen" value="true" />
     <preference name="webviewbounce" value="true" />
@@ -49,6 +49,7 @@
     <gap:plugin name="org.apache.cordova.splashscreen" />
 	
 	<gap:plugin name="nl.x-services.plugins.socialsharing" />
+	<gap:plugin name="com.phonegap.plugins.revmob" />
 	
 	<gap:config-file platform="ios" parent="UIViewControllerBasedStatusBarAppearance" overwrite="true">
 		<false/>
