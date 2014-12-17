@@ -21,7 +21,7 @@
  * under the License.
  *
 */
-
+alert('GOT revmob.js!');
 (function(cordova) {
 
 	var exec = require('cordova/exec'),
