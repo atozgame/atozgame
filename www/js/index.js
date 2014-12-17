@@ -46,8 +46,11 @@ var app = {
     // Application Constructor
     initialize: function() {
         this.bindEvents();
+		alert(typeof RevMob);
 		RevMob.initWithAppId('5490ababf5f2a8a702afdff2');
+		alert(1);
 		RevMob.showBanner(null, null);
+		alert(2);
 		// get latest database
 		updateDatabase( function() {
 			// back button clicks
