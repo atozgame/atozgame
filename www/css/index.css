@@ -916,7 +916,7 @@ body, input, button {
 	margin-bottom: 1px;
 }
 #category-list-container {
-	margin: 1rem 1rem 1.5rem 1rem;
+	margin: 0 1rem 1.5rem 1rem;
 /*
 	height: 20rem;
 	overflow: hidden;

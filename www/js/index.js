@@ -147,6 +147,7 @@ var app = {
 				adId: admobid.banner, 
 				position: AdMob.AD_POSITION.BOTTOM_CENTER, 
 				autoShow: true,
+				overlap: true,
 				isTesting: true,
 				success: function() {
 					alert('banner create success');
@@ -551,7 +552,7 @@ function getNextLetter() {
 				if ( results.rows.item(0).letterExists ) {
 					$('#current-letter').html( nextLetter );
 				} else {
-					if ( nextLetter == 'Z' ) {
+					if ( nextLetter == '_' ) {
 						gameFinished();
 					} else {
 						getNextLetter();
@@ -618,7 +619,7 @@ function changeScreen( screen ) {
 			break;
 		case 'categories':
 			fadeIn('#categories-elements');
-			categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false, snap: 'div' } );
+			//categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false, snap: 'div' } );
 			break;
 		case 'highscores':
 			initHighScoreScreen();
