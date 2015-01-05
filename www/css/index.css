@@ -87,7 +87,7 @@ body, input, button {
 
 .footer {
 	position: absolute;
-	bottom: 0;
+	bottom: 50px; /* to account for the banner ad */
 	left: 0;
 	width: 100%;
 	height: 2rem;

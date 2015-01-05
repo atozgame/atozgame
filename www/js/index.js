@@ -543,24 +543,29 @@ function getNextLetter() {
 		var nextLetter = currentLetter.charCodeAt(0) + 1;
 		nextLetter = String.fromCharCode( nextLetter ).toUpperCase();
 	}
-	db.transaction( function(tx) {
-		tx.executeSql( 'SELECT COUNT(id) AS letterExists FROM word WHERE category_id = ? AND word LIKE ?', [ currentCategoryId, nextLetter+'%' ], function( tx, results ) {
-			currentLetter = nextLetter;
-			if ( testing && ( nextLetter == 'C' ) ) {
-				gameFinished();
-			} else {
-				if ( results.rows.item(0).letterExists ) {
-					$('#current-letter').html( nextLetter );
+	// _ is the next character after Z
+	if ( nextLetter == '_' ) {
+		setTimeout( gameFinished, 1500 ); // timeout so the last letter can be seen
+	} else {
+		db.transaction( function(tx) {
+			tx.executeSql( 'SELECT COUNT(id) AS letterExists FROM word WHERE category_id = ? AND word LIKE ?', [ currentCategoryId, nextLetter+'%' ], function( tx, results ) {
+				currentLetter = nextLetter;
+				if ( testing && ( nextLetter == 'C' ) ) {
+					gameFinished();
 				} else {
-					if ( nextLetter == '_' ) {
-						gameFinished();
+					if ( results.rows.item(0).letterExists ) {
+						$('#current-letter').html( nextLetter );
 					} else {
-						getNextLetter();
+						if ( nextLetter == '_' ) {
+							setTimeout( gameFinished, 1500 ); // timeout so the last letter can be seen
+						} else {
+							getNextLetter();
+						}
 					}
 				}
-			}
+			} );
 		} );
-	} );
+	}
 }
 
 function gameFinished() {
