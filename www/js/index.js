@@ -635,6 +635,8 @@ function startGame() {
 	currentScore = 0;
 	// clear the board
 	$('#entries').empty();
+	// clear the word entry box
+	clearWord();
 	// reset the current letter
 	currentLetter = '';
 	getNextLetter();
