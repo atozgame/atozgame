@@ -110,41 +110,6 @@ var app = {
 					}, 100 );
 				} );
 			} );
-			// select the right Ad Id according to platform
-			alert(typeof AdMob);
-			if( AdMob ) {
-				alert('in');
-				var admobid = {};
-				if( /(android)/i.test(navigator.userAgent) ) { // for android
-					admobid = {
-						banner: '', // or DFP format "/6253334/dfp_example_ad"
-						interstitial: ''
-					};
-				} else if(/(ipod|iphone|ipad)/i.test(navigator.userAgent)) { // for ios
-					admobid = {
-						banner: 'ca-app-pub-5744843625528542/4449323713', // or DFP format "/6253334/dfp_example_ad"
-						interstitial: ''
-					};
-				} else { // for windows phone
-					admobid = {
-						banner: '', // or DFP format "/6253334/dfp_example_ad"
-						interstitial: ''
-					};
-				}
-				AdMob.createBanner( {
-					adId: admobid.banner, 
-					position: AdMob.AD_POSITION.BOTTOM_CENTER, 
-					autoShow: true,
-					success: function() {
-						alert('banner create success');
-					},
-					error: function() {
-						alert('banner create fail');
-					}
-				} );
-			} else {
-				alert('No AdMob');
-			}
 		} );
     },
     // Bind Event Listeners
@@ -159,7 +124,42 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        app.receivedEvent('deviceready');
+		// select the right Ad Id according to platform
+		alert(typeof AdMob);
+		if( AdMob ) {
+			alert('in');
+			var admobid = {};
+			if( /(android)/i.test(navigator.userAgent) ) { // for android
+				admobid = {
+					banner: '', // or DFP format "/6253334/dfp_example_ad"
+					interstitial: ''
+				};
+			} else if(/(ipod|iphone|ipad)/i.test(navigator.userAgent)) { // for ios
+				admobid = {
+					banner: 'ca-app-pub-5744843625528542/4449323713', // or DFP format "/6253334/dfp_example_ad"
+					interstitial: ''
+				};
+			} else { // for windows phone
+				admobid = {
+					banner: '', // or DFP format "/6253334/dfp_example_ad"
+					interstitial: ''
+				};
+			}
+			AdMob.createBanner( {
+				adId: admobid.banner, 
+				position: AdMob.AD_POSITION.TOP_CENTER, 
+				autoShow: true,
+				isTesting: true,
+				success: function() {
+					alert('banner create success');
+				},
+				error: function() {
+					alert('banner create fail');
+				}
+			} );
+		} else {
+			alert('No AdMob');
+		}
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
