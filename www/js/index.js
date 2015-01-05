@@ -111,7 +111,9 @@ var app = {
 				} );
 			} );
 			// select the right Ad Id according to platform
+			alert(typeof AdMob);
 			if( AdMob ) {
+				alert('in');
 				var admobid = {};
 				if( /(android)/i.test(navigator.userAgent) ) { // for android
 					admobid = {
@@ -133,10 +135,10 @@ var app = {
 					adId: admobid.banner, 
 					position: AdMob.AD_POSITION.BOTTOM_CENTER, 
 					autoShow: true,
-					success: {
+					success: function() {
 						alert('banner create success');
 					},
-					error: {
+					error: function() {
 						alert('banner create fail');
 					}
 				} );
