@@ -46,11 +46,6 @@ var app = {
     // Application Constructor
     initialize: function() {
         this.bindEvents();
-		alert(typeof RevMob);
-		RevMob.initWithAppId('5490ababf5f2a8a702afdff2');
-		alert(1);
-		RevMob.showBanner(null, null);
-		alert(2);
 		// get latest database
 		updateDatabase( function() {
 			// back button clicks
@@ -115,6 +110,39 @@ var app = {
 					}, 100 );
 				} );
 			} );
+			// select the right Ad Id according to platform
+			if( AdMob ) {
+				var admobid = {};
+				if( /(android)/i.test(navigator.userAgent) ) { // for android
+					admobid = {
+						banner: '', // or DFP format "/6253334/dfp_example_ad"
+						interstitial: ''
+					};
+				} else if(/(ipod|iphone|ipad)/i.test(navigator.userAgent)) { // for ios
+					admobid = {
+						banner: 'ca-app-pub-5744843625528542/4449323713', // or DFP format "/6253334/dfp_example_ad"
+						interstitial: ''
+					};
+				} else { // for windows phone
+					admobid = {
+						banner: '', // or DFP format "/6253334/dfp_example_ad"
+						interstitial: ''
+					};
+				}
+				AdMob.createBanner( {
+					adId: admobid.banner, 
+					position: AdMob.AD_POSITION.BOTTOM_CENTER, 
+					autoShow: true,
+					success: {
+						alert('banner create success');
+					},
+					error: {
+						alert('banner create fail');
+					}
+				} );
+			} else {
+				alert('No AdMob');
+			}
 		} );
     },
     // Bind Event Listeners
