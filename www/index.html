@@ -7,7 +7,7 @@
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />-->
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" type="text/css" href="css/v2.css" />
         <title>A to Z Game</title>
     </head>
     <body>
@@ -22,18 +22,20 @@
 			<div id="intro-head">
 			</div>
 			<div id="intro-logo">
-				<div></div>
+				<img src="/img/v2/logo.png" />
 			</div>
 			<div id="intro-buttons">
 				<div class="intro-text">
-					As easy as A B C . . .
+					hey, wanna play?
 				</div>
-				<button id="intro-button-play" onclick="changeScreen('categories');">Let's Play!</button>
-				<button id="intro-button-highscores" onclick="changeScreen('highscores');">View High Scores</button>
-				<!--<button id="intro-button-store" onclick="changeScreen('store');"><span class="gimme">Gimme!</span> Store</button>
-				<button id="intro-button-help" onclick="changeScreen('help');">Instructions</button>
-				<button id="intro-button-leaderboard" onclick="changeScreen('leaderboard');">Leaderboard</button>-->
+				<div class="button-group">
+					<button id="intro-button-help" class="button button1 button-margin" ontouchend="changeScreen('help');">How?</button><button id="intro-button-play" class="button button2" ontouchend="changeScreen('categories');">Yes!</button>
+				</div>
+				<!--<button id="intro-button-store" ontouchend="changeScreen('store');"><span class="gimme">Gimme!</span> Store</button>
+				<button id="intro-button-help" ontouchend="changeScreen('help');">Instructions</button>
+				<button id="intro-button-leaderboard" ontouchend="changeScreen('leaderboard');">Leaderboard</button>-->
 			</div>
+			<button id="intro-button-highscores" class="button button1 button-wide" ontouchend="changeScreen('highscores');">High Scores</button>
 			<div class="footer">
 			</div>
         </div>
@@ -53,7 +55,7 @@
 					</div>
 				</div>
 				<div id="category-button-container">
-					<button id="select-category-button" onclick="selectedCategory();">PLAY!</button>
+					<button id="select-category-button" class="button button2 button-wide" ontouchend="selectedCategory();">PLAY!</button>
 				</div>
 			</div>
 			<div id="game-countdown">3</div>
@@ -63,7 +65,7 @@
         <div class="screen" id="screen-game">
 			<div id="game-elements">
 				<div id="game-header" class="header-bar">
-					<div id="game-header-btn" class="header-bar-btn" onclick="quitGame();">Quit</div>
+					<div id="game-header-btn" class="header-bar-btn" ontouchend="quitGame();">Quit</div>
 					<div id="game-category"></div>
 					<div id="game-timer">00:00.00</div>
 					<div id="game-score">
@@ -76,9 +78,9 @@
 						<div id="entries"></div>
 					</div>
 					<div id="word-entry">
-						<div id="current-letter">A</div>
-						<div id="word"></div><div id="clear-word" onclick="clearWord();"></div>
-						<button onclick="submitWord();"><div></div></button>
+						<div id="current-letter"></div>
+						<div id="word"></div><div id="clear-word" ontouchend="clearWord();"></div>
+						<button ontouchend="submitWord();"><div></div></button>
 					</div>
 					<div id="keyboard"></div>
 				</div>
@@ -95,7 +97,7 @@
 					<div class="help-panel-icon" id="help-panel-icon-clue-letters">
 						<div class="help-panel-indicator" id="help-panel-clue-letters">1</div>
 					</div>
-					<div id="help-panel-close" onclick="closeHelpPanel();"></div>
+					<div id="help-panel-close" ontouchend="closeHelpPanel();"></div>
 				</div>
 			</div>
 			<div id="game-complete-panel">
@@ -105,9 +107,9 @@
 						You scored <span></span> points!
 					</div>
 					<div id="game-complete-buttons">
-						<button id="game-complete-facebook-button" onclick="postScoreToFacebook();">Post to Facebook!</button>
+						<button id="game-complete-facebook-button" class="button button1 button-wide" ontouchend="postScoreToFacebook();">Post to Facebook!</button>
 						<div id="facebookSharedMsg">Shared!</div>
-						<button id="game-complete-play-again-button" onclick="changeScreen('categories');">Play Again!</button>
+						<button id="game-complete-play-again-button" class="button button2 button-wide" ontouchend="changeScreen('categories');">Play Again!</button>
 					</div>
 				</div>
 			</div>
@@ -117,7 +119,27 @@
         <div class="screen" id="screen-help">
 			<div id="help-header" class="header-bar">
 				<div class="header-bar-btn back-btn">Back</div>
-				<div class="header-bar-text">Instructions</div>
+				<div class="header-bar-text">How2Play</div>
+			</div>
+			<div id="help-page">
+				<p>
+					<strong>It's easy!</strong>
+				</p>
+				<p>
+					All you have to do is select a category, then think of words that relate to that category, with the first one
+					starting with "A", then "B", and so on, all the way through to "Z".
+				</p>
+				<p>
+					If you can't think of one, don't waste time! Hit the "Pass!" button and move onto the next letter. If there is no
+					word beginning with that letter it will be automatically skipped.
+				</p>
+				<p>
+					Points are earned based on the letters used in the word - the least commonly used letters are worth more than
+					the more frequently used ones.
+				</p>
+				<p id="help-screenshot">
+					<img src="/img/v2/help-screenshot.png" />
+				</p>
 			</div>
         </div>
 		
@@ -178,6 +200,15 @@
 				<div class="header-bar-text">Leaderboard</div>
 			</div>
         </div>
+		
+		<div id="confirm-modal">
+			<div id="confirm-modal-message">
+			</div>
+			<div id="confirm-modal-buttons">
+				<button type="button" class="button button1" id="confirm-modal-cancel">Cancel</button>
+				<button type="button" class="button button2" id="confirm-modal-ok">OK</button>
+			</div>
+		</div>
 		
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>

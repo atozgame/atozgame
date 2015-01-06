@@ -1,7 +1,6 @@
 var ENDPOINT_URL = 'http://atozgame.co.uk/gameservice.php';
 var testing = false;
 var categories = [];
-//var currentCategory = 'Animals';
 var currentCategoryId = 0;
 var currentLetter = '';
 var clickType = 'mousedown';
@@ -12,6 +11,7 @@ var gimmesRemaining_freezeTime = 10;
 var gimmesRemaining_clueLetters = 10;
 var gameEnabled = false;
 var gameEntriesScroller, categoriesScroller;
+var passEnabled = true;
 var letters = new Array();
 letters['Q'] = 10;
 letters['W'] = 5;
@@ -49,7 +49,7 @@ var app = {
 		// get latest database
 		updateDatabase( function() {
 			// back button clicks
-			$('.header-bar .back-btn').click( backToHome );
+			$('.header-bar .back-btn').on( 'touchend', backToHome );
 			// change click event type for mobile devices
 			if ('ontouchstart' in document.documentElement) {
 				clickType = 'touchstart';
@@ -60,7 +60,7 @@ var app = {
 				var value = letters[letter];
 				if ( letter == 'Z' ) {
 					// clear
-					keys += '<div class="key letter-key" id="key-hyphen" data-key="hyphen"><div><em>0</em><span>-</span></div></div>';
+					keys += '<div class="key letter-key key-alt" id="key-hyphen" data-key="hyphen"><div><em>0</em><span>-</span></div></div>';
 				}
 				keys += '<div class="key letter-key" id="key-' + letter + '" data-key="' + letter + '"><div><em>' + value + '</em><span>' + letter + '</span></div></div>';
 				if ( letter == 'P' || letter == 'L' ) {
@@ -73,9 +73,9 @@ var app = {
 			}
 			keys += '<br />';
 			//keys += '<div class="key key-long" id="key-gimme" data-key="gimme" onclick="showHelpPanel();"><span class="gimme">Gimme!</span><div></div></div>';
-			keys += '<div class="key key-long" id="key-pass" data-key="pass" onclick="passWord();"><span>Pass!</span></div>';
+			keys += '<div class="key key-long" id="key-pass" data-key="pass"><span>Pass!</span></div>';
 			keys += '<div class="key key-long" id="key-space" data-key="space"><span>Space</span></div>';
-			keys += '<div class="key key-long" id="key-enter" data-key="enter"><span>Enter</span><div></div></div>';
+			keys += '<div class="key key-long" id="key-enter" data-key="enter"><span>Enter!</span><div></div></div>';
 			// other keys
 			$('#keyboard').append( '<div id="keyboardInner">' + keys + '</div>' );
 			$('#keyboard .key').bind( clickType, function() {
@@ -102,7 +102,7 @@ var app = {
 				tx.executeSql( 'SELECT * FROM category ORDER BY title ASC', [], function( tx, results ) {
 					var len = results.rows.length, i;
 					for ( i = 0; i < len; i++ ){
-						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
+						$('#category-list').append('<div class="category ' + ( ( i % 2 == 0 ) ? 'row' : 'alt-row' ) + '" ontouchend="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
 					}
 					// hide splash screen
 					setTimeout( function() {
@@ -129,7 +129,7 @@ var app = {
 			var admobid = {};
 			if( /(android)/i.test(navigator.userAgent) ) { // for android
 				admobid = {
-					banner: '', // or DFP format "/6253334/dfp_example_ad"
+					banner: 'ca-app-pub-5744843625528542/1436981712', // or DFP format "/6253334/dfp_example_ad"
 					interstitial: ''
 				};
 			} else if(/(ipod|iphone|ipad)/i.test(navigator.userAgent)) { // for ios
@@ -137,27 +137,24 @@ var app = {
 					banner: 'ca-app-pub-5744843625528542/4449323713', // or DFP format "/6253334/dfp_example_ad"
 					interstitial: ''
 				};
-			} else { // for windows phone
+			}/* else { // for windows phone
 				admobid = {
 					banner: '', // or DFP format "/6253334/dfp_example_ad"
 					interstitial: ''
 				};
-			}
+			}*/
 			AdMob.createBanner( {
 				adId: admobid.banner, 
 				position: AdMob.AD_POSITION.BOTTOM_CENTER, 
 				autoShow: true,
 				overlap: true,
-				isTesting: true,
+				isTesting: false,
 				success: function() {
-					alert('banner create success');
 				},
 				error: function() {
-					alert('banner create fail');
 				}
 			} );
 		} else {
-			alert('No AdMob');
 		}
     },
     // Update DOM on a Received Event
@@ -264,7 +261,7 @@ function selectedCategory() {
 			$countdown.text('3').show().fadeOut( animSpeed, function() {
 				$countdown.text('2').show().fadeOut( animSpeed, function() {
 					$countdown.text('1').show().fadeOut( animSpeed, function() {
-						$countdown.addClass('go').text('GO!').show();
+						$countdown.addClass('go').text('go!').show();
 						setTimeout( function() {
 							changeScreen('game');
 							$countdown.removeClass('go').hide();
@@ -281,7 +278,7 @@ function fadeIn( selector ) {
 }
 
 function fadeOut( selector ) {
-	$(selector).css('opacity','0.4');
+	$(selector).css('opacity','0.1');
 }
 
 /*
@@ -381,8 +378,10 @@ function tapKey( key ) {
 		var word = getWord();
 		switch ( key ) {
 			case 'backspace':
-				word = word.substr( 0, word.length - 1 );
-				updateWord( word );
+				if ( word.length > 1 ) {
+					word = word.substr( 0, word.length - 1 );
+					updateWord( word );
+				}
 				break;
 			case 'gimme':
 				break;
@@ -402,6 +401,9 @@ function tapKey( key ) {
 				word += '-';
 				updateWord( word );
 				return;
+			case 'pass':
+				passWord();
+				break;
 			default:
 				word += key;
 				updateWord( word );
@@ -425,7 +427,7 @@ function updateWord( word ) {
 }
 
 function clearWord() {
-	updateWord('');
+	updateWord( currentLetter );
 }
 
 function getWordValue( word ) {
@@ -446,15 +448,19 @@ function addWordToList( word, score ) {
 	var entryHeight = 41;
 	var speed = 500;
 	var status = ( score > 0 ? 'valid' : 'invalid' );
-	var $entry = $('<div class="word-entry latest-entry"><div class="word-entry-inner ' + status + '-word"><div>' + word + '</div><span>' + score.toString() + '</span></div></div>').css({bottom:'-' + entryHeight + 'px'});
-	clearWord();
+	if ( score > 0 ) {
+		var outputScore = '+' + score.toString();
+	} else {
+		var outputScore = '0';
+	}
+	var $entry = $('<div class="word-entry latest-entry ' + status + '-word"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight + 'px'});
 	$('#entries').append( $entry );
 	setTimeout( function() {
 		var entryCount = $('#entries .word-entry').length;
 		$('#entries .word-entry').each( function( i, previousEntry ) {
 			var opacity = $(previousEntry).css('opacity');
 			if ( opacity > 0.5 ) {
-				opacity -= 0.075;
+				opacity -= 0.12;
 			}
 			$(previousEntry).animate( {
 				bottom: '+=' + entryHeight + 'px',
@@ -479,6 +485,7 @@ function doSubmitWord( word ) {
 		word = word.toUpperCase();
 		if ( word.substr(0,1) == currentLetter ) {
 			db.transaction( function(tx) {
+				var originalWord = word;
 				word = word.replace(/ /g,'');
 				word = word.replace(/-/g,'');
 				tx.executeSql( 'SELECT score FROM word WHERE category_id = ? AND REPLACE( REPLACE( word, " ", "" ), "-", "" ) = ?', [ currentCategoryId, word ], function( tx, results ) {
@@ -489,19 +496,25 @@ function doSubmitWord( word ) {
 							updateScore( score );
 						}
 					}
-					addWordToList( word, score );
+					addWordToList( originalWord, score );
 				}, function( tx, e ) {
 					//console.dir( e );
 				} );
 			} );
 		} else {
-			alert('Your word must begin with ' + currentLetter + '!');
+			alertModal( 'Your word must begin with ' + currentLetter + '!', function() {} );
 		}
 	}
 }
 
 function passWord() {
-	addWordToList( '[PASS]', 0 );
+	if ( passEnabled ) {
+		passEnabled = false;
+		addWordToList( '[PASS]', 0 );
+		setTimeout( function() {
+			passEnabled = true;
+		}, 500 );
+	}
 }
 
 function updateScore( points ) {
@@ -554,7 +567,8 @@ function getNextLetter() {
 					gameFinished();
 				} else {
 					if ( results.rows.item(0).letterExists ) {
-						$('#current-letter').html( nextLetter );
+						//$('#current-letter').html( nextLetter );
+						updateWord( nextLetter );
 					} else {
 						if ( nextLetter == '_' ) {
 							setTimeout( gameFinished, 1500 ); // timeout so the last letter can be seen
@@ -605,12 +619,48 @@ function gameFinished() {
 
 function quitGame() {
 	if ( gameEnabled ) {
-		if ( confirm( 'Are you sure you want to quit this game?' ) ) {
-			timer.stop();
-			timer.reset();
-			changeScreen('intro');
-		}
+		confirmModal(
+			'Are you sure you want to quit this game?',
+			function() {
+				timer.stop();
+				timer.reset();
+				changeScreen('intro');
+			},
+			function() {
+			}
+		);
 	}
+}
+
+function alertModal( message, okCallback ) {
+	$('#confirm-modal-cancel').hide();
+	showModal( message, okCallback, function() {} );
+}
+
+function confirmModal( message, okCallback, cancelCallback ) {
+	$('#confirm-modal-cancel').show();
+	showModal( message, okCallback );
+}
+
+function showModal( message, okCallback, cancelCallback ) {
+	fadeOut('.screen:visible');
+	$('#confirm-modal-message').html( message );
+	$('#confirm-modal-ok').off('tap').on( 'touchend', function(e) {
+		e.preventDefault();
+		hideConfirmModal();
+		okCallback();
+	} );
+	$('#confirm-modal-cancel').off('tap').on( 'touchend', function(e) {
+		e.preventDefault();
+		hideConfirmModal();
+		cancelCallback();
+	} );
+	$('#confirm-modal').show();
+}
+
+function hideConfirmModal() {
+	$('#confirm-modal').hide();
+	fadeIn('.screen:visible');
 }
 
 function changeScreen( screen ) {
@@ -643,6 +693,8 @@ function startGame() {
 	$('#entries').empty();
 	// clear the word entry box
 	clearWord();
+	// ensure pass is enabled
+	passEnabled = true;
 	// reset the current letter
 	currentLetter = '';
 	getNextLetter();
@@ -656,7 +708,8 @@ function startGame() {
 	gameEnabled = true;
 }
 
-function backToHome() {
+function backToHome(e) {
+	e.preventDefault();
 	changeScreen('intro');
 }
 
@@ -700,14 +753,17 @@ function initHighScoreScreen() {
 	db.transaction( function(tx) {
 		tx.executeSql( 'SELECT category.title, COALESCE( highscores.score, 0 ) AS highscore, COALESCE( highscores.seconds_taken, 0 ) AS seconds_taken FROM category LEFT JOIN highscores ON category.id = highscores.category_id', [], function( tx, results ) {
 			var html = 	'<table cellspacing="0" cellpadding="0">' +
+						'<thead>' +
 						'	<tr>' +
 						'		<th>Category</th>' +
 						'		<th class="time_taken">Time</th>' +
 						'		<th class="highscore">High Score</th>' +
 						'	</tr>';
+						'</thead>';
+						'<tbody>';
 			if ( results.rows.length > 0 ) {
 				for ( var i = 0; i < results.rows.length; i++ ) {
-					html +=	'	<tr>' + 
+					html +=	'	<tr class="' + ( ( i % 2 == 0 ) ? 'row' : 'alt-row' ) + '">' + 
 							'		<td class="category">' + results.rows.item(i).title + '</td>' +
 							'		<td class="time_taken">' + convertSecondsToTime( results.rows.item(i).seconds_taken ) + '</td>' +
 							'		<td class="highscore">' + results.rows.item(i).highscore + '</td>' +
@@ -718,6 +774,7 @@ function initHighScoreScreen() {
 						'		<td colspan="2">No scores found</td>' +
 						'	</tr>';
 			}
+			html += '</tbody>';
 			html += '</table>';
 			$('#highscoresTable').html( html );
 		} );
