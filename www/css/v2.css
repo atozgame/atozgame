@@ -231,6 +231,7 @@ strong, b {
 #key-gimme span, #key-pass span, #key-enter span {
 	vertical-align: middle;	
 	font-size: 1rem;
+	line-height: 2.4rem;
 }
 #key-gimme div {
 	color: #333;
@@ -255,7 +256,6 @@ strong, b {
 }
 #key-enter, #key-pass {
 	height: 2.5rem;
-	line-height: 2.4rem;
 	top: -0.2rem;
 }
 #key-enter {
