@@ -1,13 +1,13 @@
 @font-face {
     font-family: 'SourceSansPro-Light';
-    src: url('/fonts/SourceSansPro-Light.ttf');
+    src: url('../fonts/SourceSansPro-Light.ttf');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'SourceSansPro-Bold';
-    src: url('/fonts/SourceSansPro-Bold.ttf');
+    src: url('../fonts/SourceSansPro-Bold.ttf');
     font-weight: bold;
     font-style: normal;
 }
@@ -70,7 +70,7 @@ strong, b {
 }
 
 #screen-splash {
-	background: #fff url(/img/v2/logo.png) no-repeat center center;
+	background: #fff url(../img/v2/logo.png) no-repeat center center;
 }
 
 .footer {
@@ -79,7 +79,7 @@ strong, b {
 	left: 0;
 	width: 100%;
 	height: 2rem;
-	background: url(/img/v2/footer.png) no-repeat center center;
+	background: url(../img/v2/footer.png) no-repeat center center;
 }
 .footer-container {
 	height: 2rem;
@@ -221,7 +221,7 @@ strong, b {
 	margin-right: 0;
 }
 #key-backspace span {
-	background: url(/img/v2/backspace.png) no-repeat center center;
+	background: url(../img/v2/backspace.png) no-repeat center center;
 }
 #key-gimme, #key-pass {
 	background: #ffe400;
@@ -272,7 +272,7 @@ strong, b {
 	left: 0;
 	width: 100%;
 	height: 2.5rem;
-	background: #fff url(/img/v2/word-indicator.png) no-repeat left center;
+	background: #fff url(../img/v2/word-indicator.png) no-repeat left center;
 }
 #word {
 	line-height: 2rem;
@@ -297,12 +297,12 @@ strong, b {
 	border-left: 1px solid #2d3c53;
 	box-sizing: content-box;
 	padding: 0;
-	background: #6de700 url(/img/v2/tick.png) no-repeat center center;
+	background: #6de700 url(../img/v2/tick.png) no-repeat center center;
 }
 #clear-word {
 	width: 10%;
 	height: 100%;
-	background: url(/img/v2/clear-word.png) no-repeat center center;
+	background: url(../img/v2/clear-word.png) no-repeat center center;
 	display: inline-block;
 	vertical-align: middle;
 }
