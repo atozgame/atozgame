@@ -102,7 +102,7 @@ var app = {
 				tx.executeSql( 'SELECT * FROM category ORDER BY title ASC', [], function( tx, results ) {
 					var len = results.rows.length, i;
 					for ( i = 0; i < len; i++ ){
-						$('#category-list').append('<div class="category ' + ( ( i % 2 == 0 ) ? 'row' : 'alt-row' ) + '" ontouchend="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
+						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
 					}
 					// hide splash screen
 					setTimeout( function() {
@@ -185,7 +185,7 @@ function updateDatabase( callback ) {
 			tx.executeSql('DROP TABLE IF EXISTS category',[]);
 			tx.executeSql('DROP TABLE IF EXISTS word',[]);
 			// create the category table
-			tx.executeSql('CREATE TABLE category ( id unique, title )',[]);
+			tx.executeSql('CREATE TABLE category ( id unique, title, description )',[]);
 			// create the word table
 			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )',[]);
 			// create high score table if necessary
@@ -194,7 +194,7 @@ function updateDatabase( callback ) {
 			// tx.executeSql('ALTER TABLE highscores ADD COLUMN seconds_taken',[]);
 			// insert category data
 			for ( var c in gameData.categories ) {
-				tx.executeSql('INSERT INTO category ( id, title ) VALUES ( ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title ] );
+				tx.executeSql('INSERT INTO category ( id, title, description ) VALUES ( ?, ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title, gameData.categories[c].description ] );
 			}
 			// insert word data
 			for ( var w in gameData.words ) {
@@ -245,9 +245,13 @@ function getCurrentCategory( callback ) {
 
 function selectCategory( el, id ) {
 	currentCategoryId = id;
-	$('#category-list .selected').removeClass('selected');
-	$(el).addClass('selected');
-	$('#select-category-button').addClass('active');
+	getCurrentCategory( function( category ) {
+		$('#category-list .selected').removeClass('selected');
+		$(el).addClass('selected');
+		var $desc = $('#category-description');
+		$desc.html( '<h2>' + category.title + '</h2><p>' + category.description + '</p>' );
+		$('#select-category-button').addClass('active');
+	} );
 }
 
 function selectedCategory() {
@@ -502,7 +506,7 @@ function doSubmitWord( word ) {
 				} );
 			} );
 		} else {
-			alertModal( 'Your word must begin with ' + currentLetter + '!', function() {} );
+			alertModal( 'Errr...', 'Your word must begin with ' + currentLetter + '!', function() {} );
 		}
 	}
 }
@@ -620,6 +624,7 @@ function gameFinished() {
 function quitGame() {
 	if ( gameEnabled ) {
 		confirmModal(
+			'Really?',
 			'Are you sure you want to quit this game?',
 			function() {
 				timer.stop();
@@ -632,18 +637,20 @@ function quitGame() {
 	}
 }
 
-function alertModal( message, okCallback ) {
+function alertModal( title, message, okCallback ) {
 	$('#confirm-modal-cancel').hide();
-	showModal( message, okCallback, function() {} );
+	showModal( title, message, '!', okCallback, function() {} );
 }
 
-function confirmModal( message, okCallback, cancelCallback ) {
+function confirmModal( title, message, okCallback, cancelCallback ) {
 	$('#confirm-modal-cancel').show();
-	showModal( message, okCallback );
+	showModal( title, message, '?', okCallback );
 }
 
-function showModal( message, okCallback, cancelCallback ) {
+function showModal( title, message, icon, okCallback, cancelCallback ) {
 	fadeOut('.screen:visible');
+	$('#confirm-modal-icon').html( icon );
+	$('#confirm-modal-title').html( title );
 	$('#confirm-modal-message').html( message );
 	$('#confirm-modal-ok').off('tap').on( 'touchend', function(e) {
 		e.preventDefault();
@@ -674,7 +681,7 @@ function changeScreen( screen ) {
 			break;
 		case 'categories':
 			fadeIn('#categories-elements');
-			//categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false, snap: 'div' } );
+			categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false, snap: 'div' } );
 			break;
 		case 'highscores':
 			initHighScoreScreen();

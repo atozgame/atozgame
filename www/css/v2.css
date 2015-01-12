@@ -178,8 +178,23 @@ strong, b {
 	text-align: center;
 	width: 100%;
 }
+.key-down div {
+	position: absolute;
+	margin: -3.2rem 0 0 -5%;
+	width: 110%; /* 38px; */
+	height: 3.8rem;
+	background: #fff;
+	border-radius: 0.5rem 0.5rem 2.5rem 2.5rem;
+	box-shadow: 0 -0.05rem 0.05rem 0 #153e41;
+	z-index: 0;
+	clip: rect(-0.5rem, 3.2rem, 3.2rem, -0.5rem);
+}
 .key-down div span {
-	color: #ff0084;
+	font-size: 2rem;
+	line-height: 3rem;
+}
+.key-down {
+	background: #fff;
 }
 #key-P, #key-L, #key-M {
 	margin-right: 0;
@@ -538,14 +553,27 @@ strong, b {
 
 .header-bar-text {
 	position: absolute;
-	top: 0;
+	top: 0.1rem;
 	left: 0;
 	width: 100%;
 	line-height: 2.5rem;
-	font-size: 1.2rem;
+	font-size: 1.1rem;
 	text-align: center;
 	color: #fff;
 	text-transform: uppercase;
+}
+.with-subtext {
+	line-height: 100% !important;
+}
+.header-bar-subtext {
+	position: absolute;
+	top: 1.2rem;
+	left: 0;
+	width: 100%;
+	line-height: 100%;
+	font-size: 1.1rem;
+	text-align: center;
+	color: #fff;
 }
 .gimme {
 	font-family: 'perspective_sansblack_italic';
@@ -653,30 +681,53 @@ strong, b {
 	white-space: nowrap;
 	padding: 0.5rem 0;
 	text-align: center;
-	font-size: 1.5rem;
-	text-transform: lowercase;
-	margin-bottom: 1px;
+	font-size: 1.6rem;
+	text-transform: uppercase;
+	border-top: 1px solid #2d3c53;
+	background: #fff;
 }
 #category-list-container {
-	margin: 0 1rem 1.5rem 1rem;
-/*
-	height: 20rem;
+	position: absolute;
+	top: 0;
+	padding-top: 2.5rem;
+	width: 100%;
+	height: 40%;
 	overflow: hidden;
-	border-radius: 0.5rem;
-	box-shadow: 0 0.1rem 0.1rem #000;
-	background-color: #d5d4d4;
-	transform: translate(0px, 0px);
-*/
+	box-sizing: border-box;
 }
 #category-list div.selected {
-	background: #2d3c53;
-	color: #fff;
+	color: #ff0084;
+	background: #fff url(../img/v2/word-indicator.png) no-repeat left center;
+}
+#category-selection-bottom {
+	position: absolute;
+	top: 40%;
+	left: 0;
+	width: 100%;
+	height: 60%;
+	background: #526a8b;
 }
 #category-button-container {
 	position: absolute;
 	width: 100%;
+	top: 40%;
 	text-align: center;
 }
+#category-description {
+	color: #fff;
+	padding: 0 5%;
+	font-size: 1rem;
+}
+#category-description h2 {
+	text-align: center;
+	font-size: 1rem;
+	text-transform: uppercase;
+	margin: 0.4rem 0 0 0;
+}
+#category-description p {
+	margin: 0;
+}
+
 #select-category-button {
 	margin: 0 auto;
 }
@@ -779,10 +830,17 @@ thead th {
 	margin-left: -140px;
 	box-sizing: border-box;
 	width: 280px;
-	background: #fff;
-	border: 1px solid #ff0084;
-	padding: 12px;
+	text-align: center;
 	display: none;
+}
+#confirm-modal-icon {
+	font-size: 106px;
+	line-height: 100%;
+	color: #ff0084;
+}
+#confirm-modal-title {
+	color: #ff0084;
+	text-transform: uppercase;
 }
 #confirm-modal-message {
 	margin-bottom: 1rem;
