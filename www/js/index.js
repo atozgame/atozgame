@@ -386,7 +386,12 @@ function playSound( name ) {
 			}
 		} else {
 			//document.getElementById('sound-' + name ).play();
-			var media = new Media( 'sounds/' + name + '.wav', function() {
+			if (device.platform == 'Android') { 
+				var src = '/android_asset/www/'; 
+			} else {
+				var src = '../';
+			}
+			var media = new Media( src + '' + name + '.wav', function() {
 							/* onsuccess */
 							alert('media loaded');
 						},
