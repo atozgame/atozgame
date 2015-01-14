@@ -289,7 +289,7 @@ strong, b {
 	height: 2.5rem;
 	background: #fff url(../img/v2/word-indicator.png) no-repeat left center;
 }
-#word {
+#word-container {
 	line-height: 2rem;
 	height: 2rem;
 	width: 64%;
@@ -301,6 +301,11 @@ strong, b {
 	vertical-align: middle;
 	font-size: 1.7rem;
 	white-space: nowrap;
+}
+#word {
+	padding-right: 1px;
+	border-right: 1px solid #333;
+	float: left;
 }
 #word-entry button {
 	width: 20%;
@@ -423,10 +428,17 @@ strong, b {
 }
 .header-bar-btn {
 	position: absolute;
-	top: 0.6rem;
-	left: 0.8rem;
-	width: 18px;
-	height: 18px;
+	top: 0;
+	left: 0;
+	width: 2.5rem;
+	height: 2.5rem;
+}
+.header-bar-btn div {
+	position: absolute;
+	top: 25%;
+	left: 25%;
+	width: 50%;
+	height: 50%;
 	line-height: 32px;
 	overflow: hidden;
 	text-align: center;
@@ -440,6 +452,7 @@ strong, b {
 	border-left: 1px solid #fff;
 	transform: rotate(-45deg);
 	-webkit-transform: rotate(-45deg);
+	transform-origin: 50% 50%;
 }
 #game-score {
 	position: absolute;

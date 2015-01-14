@@ -1,5 +1,5 @@
 var ENDPOINT_URL = 'http://atozgame.co.uk/gameservice.php';
-var testing = false;
+var testing = true;
 var categories = [];
 var currentCategoryId = 0;
 var currentLetter = '';
@@ -12,6 +12,7 @@ var gimmesRemaining_clueLetters = 10;
 var gameEnabled = false;
 var gameEntriesScroller, categoriesScroller;
 var passEnabled = true;
+var soundsEnabled = true;
 var letters = new Array();
 letters['Q'] = 10;
 letters['W'] = 5;
@@ -377,9 +378,20 @@ function closeHelpPanel() {
 	$('#help-panel').hide();
 }
 
+function playSound( name ) {
+	if ( soundsEnabled ) {
+		if ( name == 'wrong' ) {
+			navigator.notification.vibrate(200);
+		} else {
+			document.getElementById('sound-' + name ).play();
+		}
+	}
+}
+
 function tapKey( key ) {
 	if ( gameEnabled ) {
 		var word = getWord();
+		playSound('click');
 		switch ( key ) {
 			case 'backspace':
 				if ( word.length > 1 ) {
@@ -427,7 +439,13 @@ function getWord() {
 
 function updateWord( word ) {
 	var $entry = getWordContainer();
+	$entry.css('float','left');
 	$entry.text( word.toUpperCase() );
+	var wordWidth = $entry.width();
+	var containerWidth = $('#word-container').width();
+	if ( wordWidth > containerWidth ) {
+		$entry.css('float','right');
+	}
 }
 
 function clearWord() {
@@ -522,6 +540,7 @@ function passWord() {
 }
 
 function updateScore( points ) {
+	playSound('correct');
 	var $scoreContainer = $('#game-score span');
 	// show the score "puff"
 	var $puff = $('<div class="score-puff">+' + points + '</div>');
@@ -567,11 +586,10 @@ function getNextLetter() {
 		db.transaction( function(tx) {
 			tx.executeSql( 'SELECT COUNT(id) AS letterExists FROM word WHERE category_id = ? AND word LIKE ?', [ currentCategoryId, nextLetter+'%' ], function( tx, results ) {
 				currentLetter = nextLetter;
-				if ( testing && ( nextLetter == 'C' ) ) {
+				if ( testing && ( nextLetter == 'E' ) ) {
 					gameFinished();
 				} else {
 					if ( results.rows.item(0).letterExists ) {
-						//$('#current-letter').html( nextLetter );
 						updateWord( nextLetter );
 					} else {
 						if ( nextLetter == '_' ) {

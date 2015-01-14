@@ -11,6 +11,10 @@
         <title>A to Z Game</title>
     </head>
     <body>
+	
+		<!-- SOUNDS -->
+		<audio id="sound-click" src="sounds/click.mp3" preload="auto"></audio>
+		<audio id="sound-correct" src="sounds/correct.wav" preload="auto"></audio>
 
 		<!-- SPLASH SCREEN -->
         <div class="screen" id="screen-splash">
@@ -44,7 +48,7 @@
         <div class="screen" id="screen-categories">
 			<div id="categories-elements">
 				<div id="categories-header" class="header-bar">
-					<div class="header-bar-btn back-btn">Back</div>
+					<div class="header-bar-btn back-btn"><div></div></div>
 					<div class="header-bar-text with-subtext">Categories</div>
 					<div class="header-bar-subtext">Select a category to begin...</div>
 				</div>
@@ -67,7 +71,7 @@
         <div class="screen" id="screen-game">
 			<div id="game-elements">
 				<div id="game-header" class="header-bar">
-					<div id="game-header-btn" class="header-bar-btn" ontouchend="quitGame();">Quit</div>
+					<div id="game-header-btn" class="header-bar-btn" ontouchend="quitGame();"><div></div></div>
 					<div id="game-category"></div>
 					<div id="game-timer">00:00.00</div>
 					<div id="game-score">
@@ -81,7 +85,7 @@
 					</div>
 					<div id="word-entry">
 						<div id="current-letter"></div>
-						<div id="word"></div><div id="clear-word" ontouchend="clearWord();"></div>
+						<div id="word-container"><div id="word"></div></div><div id="clear-word" ontouchend="clearWord();"></div>
 						<button ontouchend="submitWord();"><div></div></button>
 					</div>
 					<div id="keyboard"></div>
@@ -120,7 +124,7 @@
 		<!-- HELP SCREEN -->
         <div class="screen" id="screen-help">
 			<div id="help-header" class="header-bar">
-				<div class="header-bar-btn back-btn">Back</div>
+				<div class="header-bar-btn back-btn"><div></div></div>
 				<div class="header-bar-text">How2Play</div>
 			</div>
 			<div id="help-page">
@@ -148,7 +152,7 @@
 		<!-- HIGH SCORES SCREEN -->
 		<div class="screen" id="screen-highscores">
 			<div id="highscores-header" class="header-bar">
-				<div class="header-bar-btn back-btn">Back</div>
+				<div class="header-bar-btn back-btn"><div></div></div>
 				<div class="header-bar-text">High scores</div>
 			</div>
 			<div id="highscoresTable"></div>
@@ -157,7 +161,7 @@
 		<!-- STORE SCREEN -->
         <div class="screen" id="screen-store">
 			<div id="store-header" class="header-bar">
-				<div class="header-bar-btn back-btn">Back</div>
+				<div class="header-bar-btn back-btn"><div></div></div>
 				<div class="header-bar-text"><span class="gimme">Gimme!</span> Store</div>
 			</div>
 			<div class="intro-text">
@@ -198,7 +202,7 @@
 		<!-- LEADERBOARD SCREEN -->
         <div class="screen" id="screen-leaderboard">
 			<div id="leaderboard-header" class="header-bar">
-				<div class="header-bar-btn back-btn">Back</div>
+				<div class="header-bar-btn back-btn"><div></div></div>
 				<div class="header-bar-text">Leaderboard</div>
 			</div>
         </div>
