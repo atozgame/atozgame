@@ -386,6 +386,9 @@ function playSound( name ) {
 			}
 		} else {
 			//document.getElementById('sound-' + name ).play();
+			alert('typeof device = ' + typeof device );
+			alert('typeof device.platform = ' + typeof device.platform );
+			alert('device.platform = ' + device.platform );
 			if (device.platform == 'Android') { 
 				var src = '/android_asset/www/'; 
 			} else {
