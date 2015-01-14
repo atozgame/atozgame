@@ -386,13 +386,13 @@ function playSound( name ) {
 			}
 		} else {
 			//document.getElementById('sound-' + name ).play();
-			var media = new Media( './sounds/' + name + '.wav', function() {
+			var media = new Media( 'sounds/' + name + '.wav', function() {
 							/* onsuccess */
 							alert('media loaded');
 						},
 						function(err) {
 							/* onerror */
-							alert('media error - ' + JSON.stringify( err.message ) );
+							alert('media error - ' + JSON.stringify( err ) );
 						} );
 			media.play();
 		}
