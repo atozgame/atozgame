@@ -389,9 +389,67 @@ function playSound( name ) {
 			if ( device.platform == 'Android' ) { 
 				var src = '/android_asset/www/sounds/'; 
 			} else {
-				var src = '../sounds/';
+				var src = './sounds/';
 			}
+			alert( src + '' + name + '.wav' );
 			var media = new Media( src + '' + name + '.wav', function() {
+							/* onsuccess */
+							alert('media loaded');
+						},
+						function(err) {
+							/* onerror */
+							alert('media error - ' + JSON.stringify( err ) );
+						} );
+			media.play();
+			
+			
+			
+			//////
+			src = '/android_asset/sounds/';
+			alert( src + '' + name + '.wav' );
+			media = new Media( src + '' + name + '.wav', function() {
+							/* onsuccess */
+							alert('media loaded');
+						},
+						function(err) {
+							/* onerror */
+							alert('media error - ' + JSON.stringify( err ) );
+						} );
+			media.play();
+			
+			
+			//////
+			src = '/www/sounds/';
+			alert( src + '' + name + '.wav' );
+			media = new Media( src + '' + name + '.wav', function() {
+							/* onsuccess */
+							alert('media loaded');
+						},
+						function(err) {
+							/* onerror */
+							alert('media error - ' + JSON.stringify( err ) );
+						} );
+			media.play();
+			
+			
+			//////
+			src = '/sounds/';
+			alert( src + '' + name + '.wav' );
+			media = new Media( src + '' + name + '.wav', function() {
+							/* onsuccess */
+							alert('media loaded');
+						},
+						function(err) {
+							/* onerror */
+							alert('media error - ' + JSON.stringify( err ) );
+						} );
+			media.play();
+			
+			
+			//////
+			src = '/assets/sounds/';
+			alert( src + '' + name + '.wav' );
+			media = new Media( src + '' + name + '.wav', function() {
 							/* onsuccess */
 							alert('media loaded');
 						},
