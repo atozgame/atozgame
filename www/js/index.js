@@ -391,14 +391,13 @@ function playSound( name ) {
 			} else {
 				var src = './sounds/';
 			}
-			alert( src + '' + name + '.wav' );
-			var media = new Media( src + '' + name + '.wav', function() {
+			var media = new Media( src + '' + name + '.mp3', function() {
 							/* onsuccess */
 							alert('media loaded');
 						},
 						function(err) {
 							/* onerror */
-							alert('media error - ' + JSON.stringify( err ) );
+							alert('1 media error - ' + JSON.stringify( err ) );
 						} );
 			media.play();
 			
@@ -406,56 +405,52 @@ function playSound( name ) {
 			
 			//////
 			src = '/android_asset/sounds/';
-			alert( src + '' + name + '.wav' );
-			media = new Media( src + '' + name + '.wav', function() {
+			media = new Media( src + '' + name + '.mp3', function() {
 							/* onsuccess */
 							alert('media loaded');
 						},
 						function(err) {
 							/* onerror */
-							alert('media error - ' + JSON.stringify( err ) );
+							alert('2 media error - ' + JSON.stringify( err ) );
 						} );
 			media.play();
 			
 			
 			//////
 			src = '/www/sounds/';
-			alert( src + '' + name + '.wav' );
-			media = new Media( src + '' + name + '.wav', function() {
+			media = new Media( src + '' + name + '.mp3', function() {
 							/* onsuccess */
 							alert('media loaded');
 						},
 						function(err) {
 							/* onerror */
-							alert('media error - ' + JSON.stringify( err ) );
+							alert('3 media error - ' + JSON.stringify( err ) );
 						} );
 			media.play();
 			
 			
 			//////
 			src = '/sounds/';
-			alert( src + '' + name + '.wav' );
-			media = new Media( src + '' + name + '.wav', function() {
+			media = new Media( src + '' + name + '.mp3', function() {
 							/* onsuccess */
 							alert('media loaded');
 						},
 						function(err) {
 							/* onerror */
-							alert('media error - ' + JSON.stringify( err ) );
+							alert('4 media error - ' + JSON.stringify( err ) );
 						} );
 			media.play();
 			
 			
 			//////
 			src = '/assets/sounds/';
-			alert( src + '' + name + '.wav' );
-			media = new Media( src + '' + name + '.wav', function() {
+			media = new Media( src + '' + name + '.mp3', function() {
 							/* onsuccess */
 							alert('media loaded');
 						},
 						function(err) {
 							/* onerror */
-							alert('media error - ' + JSON.stringify( err ) );
+							alert('5 media error - ' + JSON.stringify( err ) );
 						} );
 			media.play();
 		}
