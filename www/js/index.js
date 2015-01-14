@@ -386,7 +386,7 @@ function playSound( name ) {
 			}
 		} else {
 			//document.getElementById('sound-' + name ).play();
-			var media = new Media( '/sounds/' + name + '.ogg', function() {
+			var media = new Media( '../sounds/' + name + '.ogg', function() {
 							/* onsuccess */
 						},
 						function() {
