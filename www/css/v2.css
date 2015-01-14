@@ -702,11 +702,13 @@ strong, b {
 #category-list-container {
 	position: absolute;
 	top: 0;
-	padding-top: 2.5rem;
 	width: 100%;
 	height: 40%;
 	overflow: hidden;
 	box-sizing: border-box;
+}
+#category-list {
+	padding-top: 2.5rem;
 }
 #category-list div.selected {
 	color: #ff0084;

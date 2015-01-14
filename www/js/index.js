@@ -521,6 +521,8 @@ function doSubmitWord( word ) {
 						} else {
 							playSound('wrong');
 						}
+					} else {
+						playSound('wrong');
 					}
 					addWordToList( originalWord, score );
 				}, function( tx, e ) {
