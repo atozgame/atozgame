@@ -381,7 +381,9 @@ function closeHelpPanel() {
 function playSound( name ) {
 	if ( soundsEnabled ) {
 		if ( name == 'wrong' ) {
-			navigator.notification.vibrate(200);
+			if ( navigator.notification ) {
+				navigator.notification.vibrate(200);
+			}
 		} else {
 			document.getElementById('sound-' + name ).play();
 		}
@@ -516,6 +518,8 @@ function doSubmitWord( word ) {
 						if ( results.rows.item(0).score ) {
 							score = parseInt( results.rows.item(0).score, 10 );
 							updateScore( score );
+						} else {
+							playSound('wrong');
 						}
 					}
 					addWordToList( originalWord, score );
@@ -699,7 +703,7 @@ function changeScreen( screen ) {
 			break;
 		case 'categories':
 			fadeIn('#categories-elements');
-			categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false, snap: 'div' } );
+			categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false } );
 			break;
 		case 'highscores':
 			initHighScoreScreen();
