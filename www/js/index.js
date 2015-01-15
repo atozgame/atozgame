@@ -393,64 +393,11 @@ function playSound( name ) {
 			}
 			var media = new Media( src + '' + name + '.mp3', function() {
 							/* onsuccess */
-							alert('media loaded');
+							//alert('media loaded');
 						},
 						function(err) {
 							/* onerror */
-							alert('1 media error - ' + JSON.stringify( err ) );
-						} );
-			media.play();
-			
-			
-			
-			//////
-			src = '/android_asset/sounds/';
-			media = new Media( src + '' + name + '.mp3', function() {
-							/* onsuccess */
-							alert('media loaded');
-						},
-						function(err) {
-							/* onerror */
-							alert('2 media error - ' + JSON.stringify( err ) );
-						} );
-			media.play();
-			
-			
-			//////
-			src = '/www/sounds/';
-			media = new Media( src + '' + name + '.mp3', function() {
-							/* onsuccess */
-							alert('media loaded');
-						},
-						function(err) {
-							/* onerror */
-							alert('3 media error - ' + JSON.stringify( err ) );
-						} );
-			media.play();
-			
-			
-			//////
-			src = '/sounds/';
-			media = new Media( src + '' + name + '.mp3', function() {
-							/* onsuccess */
-							alert('media loaded');
-						},
-						function(err) {
-							/* onerror */
-							alert('4 media error - ' + JSON.stringify( err ) );
-						} );
-			media.play();
-			
-			
-			//////
-			src = '/assets/sounds/';
-			media = new Media( src + '' + name + '.mp3', function() {
-							/* onsuccess */
-							alert('media loaded');
-						},
-						function(err) {
-							/* onerror */
-							alert('5 media error - ' + JSON.stringify( err ) );
+							//alert('1 media error - ' + JSON.stringify( err ) );
 						} );
 			media.play();
 		}
