@@ -44,7 +44,7 @@ var db = openDatabase( 'atozgame', 1.0, 'A to Z Game', 1024 * 1024 * 2 );
 
 function soundsEnabled() {
 	var enabled = window.localStorage.getItem('soundsEnabled');
-	if ( ( enabled.toString() === 'true' ) || ( enabled === null ) ) {
+	if ( ( enabled === 'true' ) || ( enabled === null ) ) {
 		return true;
 	} else {
 		return false;
@@ -53,7 +53,7 @@ function soundsEnabled() {
 
 function toggleSounds() {
 	var enabled = soundsEnabled();
-	window.localStorage.setItem( 'soundsEnabled', !enabled );
+	window.localStorage.setItem( 'soundsEnabled', (!enabled).toString() );
 	$('.sound-toggle').toggleClass('muted');
 }
 
