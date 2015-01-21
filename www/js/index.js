@@ -125,7 +125,7 @@ var app = {
 					}
 					// button tap sounds
 					$('button, .header-bar-btn, #category-list .category').on( 'touchend', function() {
-						playSound('drop');
+						playSound('pop');
 					} );
 					// hide splash screen
 					setTimeout( function() {
