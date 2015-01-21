@@ -67,10 +67,6 @@ var app = {
 			if ( !soundsEnabled() ) {
 				$('.sound-toggle').addClass('muted');
 			}
-			// button tap sounds
-			$('button, .header-bar-btn, #category-list .category').on( 'touchend', function() {
-				playSound('tap');
-			} );
 			// back button clicks
 			$('.header-bar .back-btn').on( 'touchend', backToHome );
 			// change click event type for mobile devices
@@ -127,6 +123,10 @@ var app = {
 					for ( i = 0; i < len; i++ ){
 						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
 					}
+					// button tap sounds
+					$('button, .header-bar-btn, #category-list .category').on( 'touchend', function() {
+						playSound('drop');
+					} );
 					// hide splash screen
 					setTimeout( function() {
 						changeScreen('intro');
