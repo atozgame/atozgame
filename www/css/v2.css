@@ -85,6 +85,18 @@ strong, b {
 	height: 2rem;
 	clear: both;
 }
+#intro-mute-button {
+	position: absolute;
+	right: 1rem;
+	top: 1rem;
+	width: 31px;
+	height: 22px;
+	background: url(../img/v2/unmuted.png) no-repeat center center;
+	background-size: cover;
+}
+#intro-mute-button.muted {
+	background-image: url(../img/v2/muted.png);
+}
 #intro-buttons {
 	text-align: center;
 	width: 100%;

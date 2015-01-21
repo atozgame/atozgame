@@ -11,12 +11,6 @@
         <title>A to Z Game</title>
     </head>
     <body>
-	
-		<!-- SOUNDS -->
-		<!--
-		<audio id="sound-click" src="sounds/click.ogg" preload="auto"></audio>
-		<audio id="sound-correct" src="sounds/correct.ogg" preload="auto"></audio>
-		-->
 		
 		<!-- SPLASH SCREEN -->
         <div class="screen" id="screen-splash">
@@ -26,6 +20,8 @@
 		<!-- INTRO SCREEN -->
         <div class="screen" id="screen-intro">
 			<div id="intro-head">
+			</div>
+			<div id="intro-mute-button" class="sound-toggle" ontouchend="toggleSounds();">
 			</div>
 			<div id="intro-logo">
 				<img src="img/v2/logo.png" />

@@ -12,7 +12,6 @@ var gimmesRemaining_clueLetters = 10;
 var gameEnabled = false;
 var gameEntriesScroller, categoriesScroller;
 var passEnabled = true;
-var soundsEnabled = true;
 var letters = new Array();
 letters['Q'] = 10;
 letters['W'] = 5;
@@ -43,12 +42,35 @@ letters['M'] = 2;
 
 var db = openDatabase( 'atozgame', 1.0, 'A to Z Game', 1024 * 1024 * 2 );
 
+function soundsEnabled() {
+	var enabled = window.localStorage.getItem('soundsEnabled');
+	if ( ( enabled.toString() === 'true' ) || ( enabled === null ) ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function toggleSounds() {
+	var enabled = soundsEnabled();
+	window.localStorage.setItem( 'soundsEnabled', !enabled );
+	$('.sound-toggle').toggleClass('muted');
+}
+
 var app = {
     // Application Constructor
     initialize: function() {
         this.bindEvents();
 		// get latest database
 		updateDatabase( function() {
+			// mute
+			if ( !soundsEnabled() ) {
+				$('.sound-toggle').addClass('muted');
+			}
+			// button tap sounds
+			$('button, .header-bar-btn, #category-list .category').on( 'touchend', function() {
+				playSound('tap');
+			} );
 			// back button clicks
 			$('.header-bar .back-btn').on( 'touchend', backToHome );
 			// change click event type for mobile devices
@@ -379,27 +401,29 @@ function closeHelpPanel() {
 }
 
 function playSound( name ) {
-	if ( soundsEnabled ) {
+	if ( soundsEnabled() ) {
 		if ( name == 'wrong' ) {
 			if ( navigator.notification ) {
 				navigator.notification.vibrate(200);
 			}
 		} else {
 			//document.getElementById('sound-' + name ).play();
-			if ( device.platform == 'Android' ) { 
-				var src = '/android_asset/www/sounds/'; 
-			} else {
-				var src = './sounds/';
+			if ( typeof device != 'undefined' ) {
+				if ( device.platform == 'Android' ) { 
+					var src = '/android_asset/www/sounds/'; 
+				} else {
+					var src = './sounds/';
+				}
+				var media = new Media( src + '' + name + '.mp3', function() {
+						/* onsuccess */
+						//alert('media loaded');
+					},
+					function(err) {
+						/* onerror */
+						//alert('1 media error - ' + JSON.stringify( err ) );
+					} );
+				media.play();
 			}
-			var media = new Media( src + '' + name + '.mp3', function() {
-							/* onsuccess */
-							//alert('media loaded');
-						},
-						function(err) {
-							/* onerror */
-							//alert('1 media error - ' + JSON.stringify( err ) );
-						} );
-			media.play();
 		}
 	}
 }
