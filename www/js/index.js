@@ -1,5 +1,5 @@
 var ENDPOINT_URL = 'http://atozgame.co.uk/gameservice.php';
-var testing = true;
+var testing = false;
 var categories = [];
 var currentCategoryId = 0;
 var currentLetter = '';
@@ -67,6 +67,15 @@ var app = {
 			if ( !soundsEnabled() ) {
 				$('.sound-toggle').addClass('muted');
 			}
+			// intro button touch events
+			$('#intro-button-help').on( 'touchend', function(e) {
+				e.preventDefault();
+				changeScreen('help');
+			} );
+			$('#intro-button-play').on( 'touchend', function(e) {
+				e.preventDefault();
+				changeScreen('categories');
+			} );
 			// back button clicks
 			$('.header-bar .back-btn').on( 'touchend', backToHome );
 			// change click event type for mobile devices
@@ -124,7 +133,7 @@ var app = {
 						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
 					}
 					// button tap sounds
-					$('button, .header-bar-btn, #category-list .category').on( 'touchend', function() {
+					$('button, .header-bar-btn').on( 'touchend', function() {
 						playSound('pop');
 					} );
 					// hide splash screen
@@ -268,6 +277,7 @@ function getCurrentCategory( callback ) {
 
 function selectCategory( el, id ) {
 	currentCategoryId = id;
+	playSound('pop');
 	getCurrentCategory( function( category ) {
 		$('#category-list .selected').removeClass('selected');
 		$(el).addClass('selected');
@@ -585,7 +595,6 @@ function passWord() {
 
 function updateScore( points ) {
 	playSound('correct');
-	var $scoreContainer = $('#game-score span');
 	// show the score "puff"
 	var $puff = $('<div class="score-puff">+' + points + '</div>');
 	$('#entries').append( $puff );
@@ -607,12 +616,13 @@ function updateScore( points ) {
 	for ( var i = 0; i < points; i++ ) {
 		setTimeout( function() {
 			localCurrentScore++;
-			doUpdateScore( $scoreContainer, localCurrentScore );
+			doUpdateScore( localCurrentScore );
 		}, 50*i );
 	}
 }
 
-function doUpdateScore( $scoreContainer, points ) {
+function doUpdateScore( points ) {
+	var $scoreContainer = $('#game-score span');
 	$scoreContainer.text( points );
 }
 
@@ -758,6 +768,7 @@ function startGame() {
 	timer.start();
 	// reset the score
 	currentScore = 0;
+	doUpdateScore( currentScore );
 	// clear the board
 	$('#entries').empty();
 	// clear the word entry box
