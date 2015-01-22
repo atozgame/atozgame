@@ -521,7 +521,7 @@ function submitWord() {
 }
 
 function addWordToList( word, score ) {
-	var entryHeight = ( screen.width < 768 ) ? '41px' : '4rem';
+	var entryHeight = ( screen.width < 768 ) ? '41px' : '4.05rem';
 	var speed = 500;
 	var status = ( score > 0 ? 'valid' : 'invalid' );
 	if ( score > 0 ) {

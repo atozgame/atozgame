@@ -193,7 +193,7 @@ strong, b {
 .key-down div {
 	position: absolute;
 	margin: -3.2rem 0 0 -5%;
-	width: 110%; /* 38px; */
+	width: 110%;
 	height: 3.8rem;
 	background: #fff;
 	border-radius: 0.5rem 0.5rem 2.5rem 2.5rem;
@@ -916,6 +916,9 @@ thead th {
 	#category-description h2, #category-description p {
 		font-size: 200%;
 	}
+	#category-list .category {
+		font-size: 2.5rem;
+	}
 	#intro-head {
 		height: 16rem;
 	}
@@ -941,11 +944,31 @@ thead th {
 	.key em {
 		font-size: 1.2rem;
 	}
+	.key-down div {
+		margin: -5.2rem 0 0 -5%;
+		height: 5.8rem;
+		border-radius: 0.5rem 0.5rem 2.5rem 2.5rem;
+		box-shadow: 0 -0.05rem 0.05rem 0 #153e41;
+		clip: rect(-0.5rem, 5.2rem, 5.2rem, -0.5rem);
+	}
+	.key-down div span {
+		font-size: 4rem;
+		line-height: 5rem;
+	}
 	#key-space span, #key-enter span, #key-pass span {
 		font-size: 2rem;
 	}
 	#key-enter span, #key-pass span {
 		line-height: 4rem;
+	}
+	#clear-word {
+		background-image: url(../img/v2/clear-word@2x.png);
+	}
+	#key-backspace span {
+		background-image: url(../img/v2/backspace@2x.png);
+	}
+	#word-entry button {
+		background-image: url(../img/v2/tick@2x.png);
 	}
 	#word-entry {
 		height: 4.5rem;
