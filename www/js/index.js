@@ -453,10 +453,7 @@ function tapKey( key ) {
 			case 'gimme':
 				break;
 			case 'enter':		
-				if ( submitWordEnabled ) {
-					submitWordEnabled = false;
-					submitWord();
-				}
+				submitWord();
 				return;
 			case 'space':
 				if ( ( word != '' ) && ( word.substr( word.length - 1, 1 ) != ' ' ) ) {
@@ -516,12 +513,15 @@ function getWordValue( word ) {
 }
 
 function submitWord() {
-	var word = getWord();
-	doSubmitWord( word );
+	if ( submitWordEnabled ) {
+		submitWordEnabled = false;
+		var word = getWord();
+		doSubmitWord( word );
+	}
 }
 
 function addWordToList( word, score ) {
-	var entryHeight = 41;
+	var entryHeight = ( screen.width < 768 ) ? '41px' : '4rem';
 	var speed = 500;
 	var status = ( score > 0 ? 'valid' : 'invalid' );
 	if ( score > 0 ) {
@@ -529,7 +529,7 @@ function addWordToList( word, score ) {
 	} else {
 		var outputScore = '0';
 	}
-	var $entry = $('<div class="word-entry latest-entry ' + status + '-word"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight + 'px'});
+	var $entry = $('<div class="word-entry latest-entry ' + status + '-word"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight });
 	$('#entries').append( $entry );
 	setTimeout( function() {
 		var entryCount = $('#entries .word-entry').length;
@@ -539,7 +539,7 @@ function addWordToList( word, score ) {
 				opacity -= 0.12;
 			}
 			$(previousEntry).animate( {
-				bottom: '+=' + entryHeight + 'px',
+				bottom: '+=' + entryHeight,
 				opacity: opacity
 			}, speed, function() {
 				if ( i == ( entryCount - 1 ) ) {
@@ -581,12 +581,18 @@ function doSubmitWord( word ) {
 						submitWordEnabled = true;
 					}, 500 );
 				}, function( tx, e ) {
-					//console.dir( e );
+					console.log('setting submitWordEnabled to true 2');
+					setTimeout( function() {
+						submitWordEnabled = true;
+					}, 500 );
 				} );
 			} );
 		} else {
+			submitWordEnabled = true;
 			alertModal( 'Errr...', 'Your word must begin with ' + currentLetter + '!', function() {} );
 		}
+	} else {
+		submitWordEnabled = true;
 	}
 }
 

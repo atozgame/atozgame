@@ -878,3 +878,88 @@ thead th {
 #confirm-modal-buttons .button {
 	width: 40%;
 }
+
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
+	body, input, button {
+		font-size: 150%;
+	}
+	.header-bar {
+		height: 3.5rem;
+	}
+	.header-bar-btn {
+		width: 3.5rem;
+		height: 3.5rem;
+	}
+	.header-bar-text {
+		font-size: 2.5rem;
+		line-height: 3rem;
+	}
+	.header-bar-text.with-subtext, #game-category {
+		font-size: 1.8rem !important;
+	}
+	.header-bar-subtext {
+		top: 1.7rem;
+		font-size: 1.5rem;
+	}
+	#game-timer {
+		font-size: 1.2rem;
+		top: auto;
+		bottom: 0.3rem;
+	}
+	#game-score {
+		font-size: 1.5rem;
+		top: 0;
+	}
+	#category-list {
+		padding-top: 3.5rem;
+	}
+	#category-description h2, #category-description p {
+		font-size: 200%;
+	}
+	#intro-head {
+		height: 16rem;
+	}
+	.footer, #keyboard-container {
+		bottom: 90px;
+	}
+	#help-screenshot {
+		margin-bottom: 90px;
+	}
+	#intro-button-highscores {
+		bottom: 150px;
+	}
+	.key, .letter-key div, #key-enter, #key-pass {
+		height: 4.5rem;
+	}
+	.key-long {
+		height: 4.3rem;
+	}
+	.key span {
+		font-size: 3rem;
+		line-height: 4.5rem;
+	}
+	.key em {
+		font-size: 1.2rem;
+	}
+	#key-space span, #key-enter span, #key-pass span {
+		font-size: 2rem;
+	}
+	#key-enter span, #key-pass span {
+		line-height: 4rem;
+	}
+	#word-entry {
+		height: 4.5rem;
+	}
+	#word-container {
+		height: 4rem;
+		line-height: 4rem;
+		font-size: 4rem;
+	}
+	.word-entry {
+		height: 4rem;
+		line-height: 4rem;
+	}
+	.word-entry-inner div {
+		font-size: 4rem;
+	}
+}
