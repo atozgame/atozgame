@@ -12,6 +12,7 @@ var gimmesRemaining_clueLetters = 10;
 var gameEnabled = false;
 var gameEntriesScroller, categoriesScroller;
 var passEnabled = true;
+var submitWordEnabled = true;
 var letters = new Array();
 letters['Q'] = 10;
 letters['W'] = 5;
@@ -451,8 +452,11 @@ function tapKey( key ) {
 				break;
 			case 'gimme':
 				break;
-			case 'enter':
-				submitWord();
+			case 'enter':		
+				if ( submitWordEnabled ) {
+					submitWordEnabled = false;
+					submitWord();
+				}
 				return;
 			case 'space':
 				if ( ( word != '' ) && ( word.substr( word.length - 1, 1 ) != ' ' ) ) {
@@ -573,6 +577,9 @@ function doSubmitWord( word ) {
 						playSound('wrong');
 					}
 					addWordToList( originalWord, score );
+					setTimeout( function() {
+						submitWordEnabled = true;
+					}, 500 );
 				}, function( tx, e ) {
 					//console.dir( e );
 				} );
@@ -775,6 +782,8 @@ function startGame() {
 	clearWord();
 	// ensure pass is enabled
 	passEnabled = true;
+	// and the ability to submit
+	submitWordEnabled = true;
 	// reset the current letter
 	currentLetter = '';
 	getNextLetter();
