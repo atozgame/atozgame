@@ -2,7 +2,7 @@
 <widget id="uk.co.atozgame.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>A to Z Game</name>
     <description>
-        Only the best game ever made, ever...
+        All you need to do is choose a category then name something from that category beginning with each letter of the alphabet. Easy, right....?
     </description>
     <author email="info@atozgame.co.uk" href="http://www.atozgame.co.uk">
         Lucian Interactive
