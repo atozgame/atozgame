@@ -50,6 +50,7 @@
     <gap:plugin name="org.apache.cordova.splashscreen" />
 	<gap:plugin name="nl.x-services.plugins.socialsharing" />
 	<gap:plugin name="com.google.cordova.admob" source="plugins.cordova.io" />
+	<gap:plugin name="com.adobe.plugins.gaplugin" version="2.3.1" />
 	
 	<gap:config-file platform="ios" parent="UIViewControllerBasedStatusBarAppearance" overwrite="true">
 		<false/>

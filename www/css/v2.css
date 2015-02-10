@@ -350,6 +350,7 @@ strong, b {
 	width: 100%;
 	position: absolute;
 	bottom: 0;
+	transform: translate3d(0,0,0);
 }
 .word-entry {
 	width: 100%;
@@ -444,6 +445,7 @@ strong, b {
 	left: 0;
 	width: 2.5rem;
 	height: 2.5rem;
+	z-index: 2;
 }
 .header-bar-btn div {
 	position: absolute;
@@ -586,6 +588,7 @@ strong, b {
 	text-align: center;
 	color: #fff;
 	text-transform: uppercase;
+	z-index: 1;
 }
 .with-subtext {
 	line-height: 100% !important;
@@ -771,6 +774,7 @@ strong, b {
 	height: 50%;
 	display: none;
 	line-height: 100%;
+	transform: translate3d(0,0,0);
 }
 #game-countdown.go {
 	font-size: 12rem;

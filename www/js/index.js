@@ -3,7 +3,6 @@ var testing = false;
 var categories = [];
 var currentCategoryId = 0;
 var currentLetter = '';
-var clickType = 'mousedown';
 var currentScore = 0;
 var timer = new StopWatch();
 var gimmesRemaining_maxWord = 10;
@@ -13,6 +12,7 @@ var gameEnabled = false;
 var gameEntriesScroller, categoriesScroller;
 var passEnabled = true;
 var submitWordEnabled = true;
+var gaPlugin;
 var letters = new Array();
 letters['Q'] = 10;
 letters['W'] = 5;
@@ -64,25 +64,28 @@ var app = {
         this.bindEvents();
 		// get latest database
 		updateDatabase( function() {
-			// mute
+			// sound toggles
+			$('.sound-toggle').on( 'tap', toggleSounds );
+			// mute?
 			if ( !soundsEnabled() ) {
 				$('.sound-toggle').addClass('muted');
 			}
 			// intro button touch events
-			$('#intro-button-help').on( 'touchend', function(e) {
-				e.preventDefault();
+			$('#intro-button-highscores').on( 'tap', function(e) {
+				changeScreen('highscores');
+			} );
+			$('#intro-button-help').on( 'tap', function(e) {
 				changeScreen('help');
 			} );
-			$('#intro-button-play').on( 'touchend', function(e) {
-				e.preventDefault();
+			$('#intro-button-play').on( 'tap', function(e) {
 				changeScreen('categories');
 			} );
+			// help page touch events
+			$('#help-panel-close').on( 'tap', closeHelpPanel );
+			// category screen touch events
+			$('#select-category-button').on( 'tap', selectedCategory );
 			// back button clicks
-			$('.header-bar .back-btn').on( 'touchend', backToHome );
-			// change click event type for mobile devices
-			if ('ontouchstart' in document.documentElement) {
-				clickType = 'touchstart';
-			}
+			$('.header-bar .back-btn').on( 'tap', backToHome );
 			// init the game screen
 			var keys = '';
 			for ( var letter in letters ) {
@@ -107,22 +110,27 @@ var app = {
 			keys += '<div class="key key-long" id="key-enter" data-key="enter"><span>Enter!</span><div></div></div>';
 			// other keys
 			$('#keyboard').append( '<div id="keyboardInner">' + keys + '</div>' );
-			$('#keyboard .key').bind( clickType, function() {
+			$('#keyboard .key').on( 'tap', function() {
 				tapKey( $(this).data('key') );
 			} );
 			$('#keyboard .letter-key')
-				.bind( clickType, function() {
+				.on( 'tap', function() {
 					if ( gameEnabled ) {
 						$(this).addClass('key-down');
 					}
 				} );
 			$('#keyboard')
-				.bind( 'mouseup touchend', function() {
+				.bind( 'tap', function() {
 					if ( gameEnabled ) {
 						$('.key-down',this).removeClass('key-down');
 					}
 				} );
 			// in-game helper click events
+			$('#game-header-btn').on( 'tap', quitGame );
+			$('#clear-word').on( 'tap', clearWord );
+			$('#word-submit-button').on( 'tap', submitWord );
+			$('#game-complete-facebook-button').on( 'tap', postScoreToFacebook );
+			$('#game-complete-play-again-button').on( 'tap', function() { changeScreen('categories'); } );
 			//$('#help-panel-icon-max-word').click( useMaxWordGimme );
 			//$('#help-panel-icon-freeze-time').click( useFreezeTimeGimme );
 			//$('#help-panel-icon-clue-letters').click( useClueLettersGimme );
@@ -134,7 +142,7 @@ var app = {
 						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
 					}
 					// button tap sounds
-					$('button, .header-bar-btn').on( 'touchend', function() {
+					$('button, .header-bar-btn').on( 'tap', function() {
 						playSound('pop');
 					} );
 					// hide splash screen
@@ -187,8 +195,9 @@ var app = {
 				error: function() {
 				}
 			} );
-		} else {
 		}
+		gaPlugin = window.plugins.gaPlugin;
+		gaPlugin.init( function() { /* success */ alert('Analytics installed'); }, function() { /* failure */ alert('Analytics failed'); }, "UA-59593790-1", 10 );
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -292,6 +301,7 @@ function selectedCategory() {
 	var index = $('#category-list .selected').index();
 	if ( index >= 0 ) {
 		getCurrentCategory( function( category ) {
+			gaPlugin.trackEvent( function() {}, function() {}, 'Category', 'Selected', category.title, 1 );
 			$('#game-category').html( category.title );
 			fadeOut('#categories-elements');
 			var animSpeed = 1000;
@@ -529,7 +539,7 @@ function addWordToList( word, score ) {
 	} else {
 		var outputScore = '0';
 	}
-	var $entry = $('<div class="word-entry latest-entry ' + status + '-word"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight });
+	var $entry = $('<div class="word-entry ' + status + '-word"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight });
 	$('#entries').append( $entry );
 	setTimeout( function() {
 		var entryCount = $('#entries .word-entry').length;
@@ -550,7 +560,6 @@ function addWordToList( word, score ) {
 				}
 			} );
 			$('.word-entry-inner',$entry).addClass('new-entry');
-			$entry.removeClass('latest-entry');
 		} );
 	}, 100 );
 	getNextLetter();
@@ -673,12 +682,13 @@ function getNextLetter() {
 
 function gameFinished() {
 	timer.stop();
+	currentScore = parseInt( currentScore, 10 );
+	gaPlugin.trackEvent( function() {}, function() {}, 'Game', 'Completed', $('#game-category').text(), currentScore );
 	gameEnabled = false;
 	// see if this is a new high score
 	db.transaction( function(tx) {
 		tx.executeSql( 'SELECT score, seconds_taken FROM highscores WHERE category_id = ?', [ currentCategoryId ], function( tx, results ) {
 			var newHighScore = false;
-			currentScore = parseInt( currentScore, 10 );
 			var secondsTaken = timer.duration();
 			if ( results.rows.length == 0 ) {
 				newHighScore = true;
@@ -715,6 +725,7 @@ function quitGame() {
 				timer.stop();
 				timer.reset();
 				changeScreen('intro');
+				gaPlugin.trackEvent( function() {}, function() {}, 'Game', 'Quit', $('#game-category').text(), 1 );
 			},
 			function() {
 			}
@@ -737,12 +748,12 @@ function showModal( title, message, icon, okCallback, cancelCallback ) {
 	$('#confirm-modal-icon').html( icon );
 	$('#confirm-modal-title').html( title );
 	$('#confirm-modal-message').html( message );
-	$('#confirm-modal-ok').off('tap').on( 'touchend', function(e) {
+	$('#confirm-modal-ok').off('tap').on( 'tap', function(e) {
 		e.preventDefault();
 		hideConfirmModal();
 		okCallback();
 	} );
-	$('#confirm-modal-cancel').off('tap').on( 'touchend', function(e) {
+	$('#confirm-modal-cancel').off('tap').on( 'tap', function(e) {
 		e.preventDefault();
 		hideConfirmModal();
 		cancelCallback();
@@ -769,6 +780,7 @@ function changeScreen( screen ) {
 			categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false } );
 			break;
 		case 'highscores':
+			gaPlugin.trackEvent( function() {}, function() {}, 'Screen', 'Viewed', 'High Scores', 1 );
 			initHighScoreScreen();
 			break;
 	}
@@ -810,17 +822,20 @@ function backToHome(e) {
 
 function postScoreToFacebook() {
 	getCurrentCategory( function( category ) {
+		gaPlugin.trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Clicked', 1 );
 		window.plugins.socialsharing.shareViaFacebook(
 			'I just scored ' + currentScore + ' on the ' + category.title + ' category! #AtoZGame',
 			null,
 			null,
 			function( shared ) {
 				if ( shared ) {
+					gaPlugin.trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Shared', 1 );
 					$('#facebookSharedMsg').html('Shared!').show();
 					$('#game-complete-facebook-button').hide();
 				}
 			},
 			function() {
+				gaPlugin.trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Failed', 1 );
 				$('#facebookSharedMsg').html('Share failed :(').show();
 			}
 		);

@@ -21,7 +21,7 @@
         <div class="screen" id="screen-intro">
 			<div id="intro-head">
 			</div>
-			<div id="intro-mute-button" class="sound-toggle" ontouchend="toggleSounds();">
+			<div id="intro-mute-button" class="sound-toggle">
 			</div>
 			<div id="intro-logo">
 				<img src="img/v2/logo.png" />
@@ -37,7 +37,7 @@
 				<button id="intro-button-help" ontouchend="changeScreen('help');">Instructions</button>
 				<button id="intro-button-leaderboard" ontouchend="changeScreen('leaderboard');">Leaderboard</button>-->
 			</div>
-			<button id="intro-button-highscores" class="button button1 button-wide" ontouchend="changeScreen('highscores');">High Scores</button>
+			<button id="intro-button-highscores" class="button button1 button-wide">High Scores</button>
 			<div class="footer">
 			</div>
         </div>
@@ -58,7 +58,7 @@
 					<div id="category-description">
 					</div>
 					<div id="category-button-container">
-						<button id="select-category-button" class="button button2 button-wide" ontouchend="selectedCategory();">PLAY!</button>
+						<button id="select-category-button" class="button button2 button-wide">PLAY!</button>
 					</div>
 				</div>
 			</div>
@@ -69,7 +69,7 @@
         <div class="screen" id="screen-game">
 			<div id="game-elements">
 				<div id="game-header" class="header-bar">
-					<div id="game-header-btn" class="header-bar-btn" ontouchend="quitGame();"><div></div></div>
+					<div id="game-header-btn" class="header-bar-btn"><div></div></div>
 					<div id="game-category"></div>
 					<div id="game-timer">00:00.00</div>
 					<div id="game-score">
@@ -83,8 +83,8 @@
 					</div>
 					<div id="word-entry">
 						<div id="current-letter"></div>
-						<div id="word-container"><div id="word"></div></div><div id="clear-word" ontouchend="clearWord();"></div>
-						<button ontouchend="submitWord();"><div></div></button>
+						<div id="word-container"><div id="word"></div></div><div id="clear-word"></div>
+						<button id="word-submit-button"><div></div></button>
 					</div>
 					<div id="keyboard"></div>
 				</div>
@@ -101,7 +101,7 @@
 					<div class="help-panel-icon" id="help-panel-icon-clue-letters">
 						<div class="help-panel-indicator" id="help-panel-clue-letters">1</div>
 					</div>
-					<div id="help-panel-close" ontouchend="closeHelpPanel();"></div>
+					<div id="help-panel-close"></div>
 				</div>
 			</div>
 			<div id="game-complete-panel">
@@ -111,9 +111,9 @@
 						You scored <span></span> points!
 					</div>
 					<div id="game-complete-buttons">
-						<button id="game-complete-facebook-button" class="button button1 button-wide" ontouchend="postScoreToFacebook();">Post to Facebook!</button>
+						<button id="game-complete-facebook-button" class="button button1 button-wide">Post to Facebook!</button>
 						<div id="facebookSharedMsg">Shared!</div>
-						<button id="game-complete-play-again-button" class="button button2 button-wide" ontouchend="changeScreen('categories');">Play Again!</button>
+						<button id="game-complete-play-again-button" class="button button2 button-wide">Play Again!</button>
 					</div>
 				</div>
 			</div>
@@ -217,6 +217,7 @@
 		
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
         <script type="text/javascript" src="js/data.js"></script>
         <script type="text/javascript" src="js/stopwatch.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
