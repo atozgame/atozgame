@@ -41,7 +41,15 @@ letters['B'] = 5;
 letters['N'] = 2;
 letters['M'] = 2;
 
+$.mobile.autoInitializePage = false;
+
 var db = openDatabase( 'atozgame', 1.0, 'A to Z Game', 1024 * 1024 * 2 );
+
+function trackEvent( successCallback, failureCallback, category, action, label, value ) {
+	if ( gaPlugin ) {
+		gaPlugin.trackEvent( successCallback(), failureCallback(), category, action, label, value );
+	}
+}
 
 function soundsEnabled() {
 	var enabled = window.localStorage.getItem('soundsEnabled');
@@ -55,6 +63,7 @@ function soundsEnabled() {
 function toggleSounds() {
 	var enabled = soundsEnabled();
 	window.localStorage.setItem( 'soundsEnabled', (!enabled).toString() );
+	trackEvent( function() {}, function() {}, 'Settings', 'Sound', ( !enabled ? 'Muted' : 'Unmuted' ), 1 );
 	$('.sound-toggle').toggleClass('muted');
 }
 
@@ -65,27 +74,42 @@ var app = {
 		// get latest database
 		updateDatabase( function() {
 			// sound toggles
-			$('.sound-toggle').on( 'tap', toggleSounds );
+			$('.sound-toggle').on( 'tap', function(e) {
+				e.preventDefault();
+				toggleSounds
+			} );
 			// mute?
 			if ( !soundsEnabled() ) {
 				$('.sound-toggle').addClass('muted');
 			}
 			// intro button touch events
 			$('#intro-button-highscores').on( 'tap', function(e) {
+				e.preventDefault();
 				changeScreen('highscores');
 			} );
 			$('#intro-button-help').on( 'tap', function(e) {
+				e.preventDefault();
 				changeScreen('help');
 			} );
 			$('#intro-button-play').on( 'tap', function(e) {
+				e.preventDefault();
 				changeScreen('categories');
 			} );
 			// help page touch events
-			$('#help-panel-close').on( 'tap', closeHelpPanel );
+			$('#help-panel-close').on( 'tap', function(e) {
+				e.preventDefault();
+				closeHelpPanel();
+			} );
 			// category screen touch events
-			$('#select-category-button').on( 'tap', selectedCategory );
+			$('#select-category-button').on( 'tap', function(e) {
+				e.preventDefault();
+				selectedCategory();
+			} );
 			// back button clicks
-			$('.header-bar .back-btn').on( 'tap', backToHome );
+			$('.header-bar .back-btn').on( 'tap', function(e) {
+				e.preventDefault();
+				backToHome();
+			} );
 			// init the game screen
 			var keys = '';
 			for ( var letter in letters ) {
@@ -110,27 +134,40 @@ var app = {
 			keys += '<div class="key key-long" id="key-enter" data-key="enter"><span>Enter!</span><div></div></div>';
 			// other keys
 			$('#keyboard').append( '<div id="keyboardInner">' + keys + '</div>' );
-			$('#keyboard .key').on( 'tap', function() {
+			$('#keyboard .key').on( 'touchend', function() {
 				tapKey( $(this).data('key') );
 			} );
-			$('#keyboard .letter-key')
-				.on( 'tap', function() {
-					if ( gameEnabled ) {
-						$(this).addClass('key-down');
-					}
-				} );
-			$('#keyboard')
-				.bind( 'tap', function() {
-					if ( gameEnabled ) {
-						$('.key-down',this).removeClass('key-down');
-					}
-				} );
+			$('#keyboard .letter-key').on( 'touchend', function() {
+				if ( gameEnabled ) {
+					$(this).addClass('key-down');
+				}
+			} );
+			$('#keyboard').on( 'touchend', function() {
+				if ( gameEnabled ) {
+					$('.key-down',this).removeClass('key-down');
+				}
+			} );
 			// in-game helper click events
-			$('#game-header-btn').on( 'tap', quitGame );
-			$('#clear-word').on( 'tap', clearWord );
-			$('#word-submit-button').on( 'tap', submitWord );
-			$('#game-complete-facebook-button').on( 'tap', postScoreToFacebook );
-			$('#game-complete-play-again-button').on( 'tap', function() { changeScreen('categories'); } );
+			$('#game-header-btn').on( 'tap', function(e) {
+				e.preventDefault();
+				quitGame();
+			} );
+			$('#clear-word').on( 'tap', function(e) {
+				e.preventDefault();
+				clearWord();
+			} );
+			$('#word-submit-button').on( 'tap', function(e) {
+				e.preventDefault();
+				submitWord();
+			} );
+			$('#game-complete-facebook-button').on( 'tap', function(e) {
+				e.preventDefault();
+				postScoreToFacebook(); 
+			} );
+			$('#game-complete-play-again-button').on( 'tap', function(e) {
+				e.preventDefault();
+				changeScreen('categories');
+			} );
 			//$('#help-panel-icon-max-word').click( useMaxWordGimme );
 			//$('#help-panel-icon-freeze-time').click( useFreezeTimeGimme );
 			//$('#help-panel-icon-clue-letters').click( useClueLettersGimme );
@@ -142,7 +179,8 @@ var app = {
 						$('#category-list').append('<div class="category" onclick="selectCategory(this,' + results.rows.item(i).id + ');">' + results.rows.item(i).title + '</div>');
 					}
 					// button tap sounds
-					$('button, .header-bar-btn').on( 'tap', function() {
+					$('button, .header-bar-btn').on( 'tap', function(e) {
+						e.preventDefault();
 						playSound('pop');
 					} );
 					// hide splash screen
@@ -197,7 +235,7 @@ var app = {
 			} );
 		}
 		gaPlugin = window.plugins.gaPlugin;
-		gaPlugin.init( function() { /* success */ alert('Analytics installed'); }, function() { /* failure */ alert('Analytics failed'); }, "UA-59593790-1", 10 );
+		gaPlugin.init( function() { /* success */ }, function() { /* failure */ }, "UA-59593790-1", 10 );
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -301,7 +339,7 @@ function selectedCategory() {
 	var index = $('#category-list .selected').index();
 	if ( index >= 0 ) {
 		getCurrentCategory( function( category ) {
-			gaPlugin.trackEvent( function() {}, function() {}, 'Category', 'Selected', category.title, 1 );
+			trackEvent( function() {}, function() {}, 'Category', 'Selected', category.title, 1 );
 			$('#game-category').html( category.title );
 			fadeOut('#categories-elements');
 			var animSpeed = 1000;
@@ -683,7 +721,7 @@ function getNextLetter() {
 function gameFinished() {
 	timer.stop();
 	currentScore = parseInt( currentScore, 10 );
-	gaPlugin.trackEvent( function() {}, function() {}, 'Game', 'Completed', $('#game-category').text(), currentScore );
+	trackEvent( function() {}, function() {}, 'Game', 'Completed', $('#game-category').text(), currentScore );
 	gameEnabled = false;
 	// see if this is a new high score
 	db.transaction( function(tx) {
@@ -725,7 +763,7 @@ function quitGame() {
 				timer.stop();
 				timer.reset();
 				changeScreen('intro');
-				gaPlugin.trackEvent( function() {}, function() {}, 'Game', 'Quit', $('#game-category').text(), 1 );
+				trackEvent( function() {}, function() {}, 'Game', 'Quit', $('#game-category').text(), 1 );
 			},
 			function() {
 			}
@@ -780,8 +818,11 @@ function changeScreen( screen ) {
 			categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false } );
 			break;
 		case 'highscores':
-			gaPlugin.trackEvent( function() {}, function() {}, 'Screen', 'Viewed', 'High Scores', 1 );
+			trackEvent( function() {}, function() {}, 'Screen', 'Viewed', 'High Scores', 1 );
 			initHighScoreScreen();
+			break;
+		case 'help':
+			trackEvent( function() {}, function() {}, 'Screen', 'Viewed', 'Help', 1 );
 			break;
 	}
 }
@@ -815,27 +856,26 @@ function startGame() {
 	gameEnabled = true;
 }
 
-function backToHome(e) {
-	e.preventDefault();
+function backToHome() {
 	changeScreen('intro');
 }
 
 function postScoreToFacebook() {
 	getCurrentCategory( function( category ) {
-		gaPlugin.trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Clicked', 1 );
+		trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Clicked', 1 );
 		window.plugins.socialsharing.shareViaFacebook(
 			'I just scored ' + currentScore + ' on the ' + category.title + ' category! #AtoZGame',
 			null,
 			null,
 			function( shared ) {
 				if ( shared ) {
-					gaPlugin.trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Shared', 1 );
+					trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Shared', 1 );
 					$('#facebookSharedMsg').html('Shared!').show();
 					$('#game-complete-facebook-button').hide();
 				}
 			},
 			function() {
-				gaPlugin.trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Failed', 1 );
+				trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Failed', 1 );
 				$('#facebookSharedMsg').html('Share failed :(').show();
 			}
 		);

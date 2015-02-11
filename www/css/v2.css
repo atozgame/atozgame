@@ -350,7 +350,6 @@ strong, b {
 	width: 100%;
 	position: absolute;
 	bottom: 0;
-	transform: translate3d(0,0,0);
 }
 .word-entry {
 	width: 100%;
@@ -367,11 +366,11 @@ strong, b {
 	left: 5%;
 	transform-style: preserve-3d;
 	transition: all 0.5s linear;
-	transform: rotateX(-90deg);
+	transform: translate3d(0,0,-90deg); /* rotateX(-90deg); */
 	transform-origin: center bottom;
 	-webkit-transform-style: preserve-3d;
 	-webkit-transition: all 0.5s linear;
-	-webkit-transform: rotateX(-90deg);
+	-webkit-transform: translate3d(0,0,-90deg); /* rotateX(-90deg); */
 	-webkit-transform-origin: center bottom;
 	position: absolute;
 	opacity: 0.15;
@@ -383,8 +382,8 @@ strong, b {
 	width: 100%;
 	height: 100%;
 	left: 0;
-	transform: rotateX(0deg) !important;
-	-webkit-transform: rotateX(0deg) !important;
+	transform: translate3d(0,0,0) !important; /* , rotateX(0deg) */
+	-webkit-transform: translate3d(0,0,0) !important;
 }
 .word-entry-inner div {
 	font-size: 1.7rem;
@@ -774,7 +773,6 @@ strong, b {
 	height: 50%;
 	display: none;
 	line-height: 100%;
-	transform: translate3d(0,0,0);
 }
 #game-countdown.go {
 	font-size: 12rem;
