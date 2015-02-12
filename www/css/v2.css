@@ -124,6 +124,13 @@ strong, b {
 .button2 {
 	background: #ff0084;
 }
+.button-disabled {
+	opacity: 0.5;
+	-webkit-opacity: 0.5;
+}
+.button-facebook {
+	background: #3B5998;
+}
 .button-wide {
 	width: 66%;
 	display: block;
@@ -341,15 +348,20 @@ strong, b {
 #entries-viewport {
 	position: relative;
 	width: 100%;
-	height: 1250px;
 	z-index: 0;
 	overflow: hidden;
 	background: #2d3c53;
 }
-#entries {
-	width: 100%;
+#entries-container {
 	position: absolute;
 	bottom: 0;
+	width: 100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+#entries {
+	width: 100%;
+	position: relative;
 }
 .word-entry {
 	width: 100%;
@@ -366,24 +378,22 @@ strong, b {
 	left: 5%;
 	transform-style: preserve-3d;
 	transition: all 0.5s linear;
-	transform: translate3d(0,0,-90deg); /* rotateX(-90deg); */
+	transform: rotateX(-90deg);
 	transform-origin: center bottom;
 	-webkit-transform-style: preserve-3d;
 	-webkit-transition: all 0.5s linear;
-	-webkit-transform: translate3d(0,0,-90deg); /* rotateX(-90deg); */
+	-webkit-transform: rotateX(-90deg);
 	-webkit-transform-origin: center bottom;
 	position: absolute;
-	opacity: 0.15;
 	height: 0;
-	background: #eaecee;
 }
 .new-entry {
 	opacity: 1;
 	width: 100%;
 	height: 100%;
 	left: 0;
-	transform: translate3d(0,0,0) !important; /* , rotateX(0deg) */
-	-webkit-transform: translate3d(0,0,0) !important;
+	transform: rotateX(0deg);
+	-webkit-transform: rotateX(0deg) !important;
 }
 .word-entry-inner div {
 	font-size: 1.7rem;
@@ -739,19 +749,19 @@ strong, b {
 #category-button-container {
 	position: absolute;
 	width: 100%;
-	top: 40%;
+	top: 60%;
 	text-align: center;
 }
 #category-description {
 	color: #fff;
 	padding: 0 5%;
-	font-size: 1rem;
+	font-size: 1.2rem;
 }
 #category-description h2 {
 	text-align: center;
-	font-size: 1rem;
+	font-size: 1.3rem;
 	text-transform: uppercase;
-	margin: 0.4rem 0 0 0;
+	margin: 0.7rem 0 0 0;
 }
 #category-description p {
 	margin: 0;
@@ -778,6 +788,9 @@ strong, b {
 	font-size: 12rem;
 }
 
+#game-complete-panel {
+	top: 20% !important;
+}
 #game-complete-panel h2 {
 	color: #ff0084;
 	text-align: center;
@@ -796,6 +809,9 @@ strong, b {
 	letter-spacing: -1px;
 }
 #game-complete-facebook-button {
+	margin-bottom: 2rem;
+}
+#game-complete-play-again-button {
 	margin-bottom: 0.5rem;
 }
 #game-complete-panel .button-wide {
@@ -855,10 +871,9 @@ thead th {
 #confirm-modal, #game-complete-panel {
 	position: absolute;
 	top: 25%;
-	left: 50%;
-	margin-left: -140px;
+	left: 17.5%;
 	box-sizing: border-box;
-	width: 280px;
+	width: 65%;
 	text-align: center;
 	display: none;
 }

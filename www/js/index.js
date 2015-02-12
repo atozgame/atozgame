@@ -76,7 +76,7 @@ var app = {
 			// sound toggles
 			$('.sound-toggle').on( 'tap', function(e) {
 				e.preventDefault();
-				toggleSounds
+				toggleSounds();
 			} );
 			// mute?
 			if ( !soundsEnabled() ) {
@@ -137,7 +137,7 @@ var app = {
 			$('#keyboard .key').on( 'touchend', function() {
 				tapKey( $(this).data('key') );
 			} );
-			$('#keyboard .letter-key').on( 'touchend', function() {
+			$('#keyboard .letter-key').on( 'touchstart', function() {
 				if ( gameEnabled ) {
 					$(this).addClass('key-down');
 				}
@@ -165,6 +165,11 @@ var app = {
 				postScoreToFacebook(); 
 			} );
 			$('#game-complete-play-again-button').on( 'tap', function(e) {
+				e.preventDefault();
+				$('#game-complete-panel').hide();
+				doCountdown();
+			} );
+			$('#game-complete-another-cat-button').on( 'tap', function(e) {
 				e.preventDefault();
 				changeScreen('categories');
 			} );
@@ -209,12 +214,12 @@ var app = {
 			if( /(android)/i.test(navigator.userAgent) ) { // for android
 				admobid = {
 					banner: 'ca-app-pub-5744843625528542/1436981712', // or DFP format "/6253334/dfp_example_ad"
-					interstitial: ''
+					interstitial: 'ca-app-pub-5744843625528542/6102462911'
 				};
 			} else if(/(ipod|iphone|ipad)/i.test(navigator.userAgent)) { // for ios
 				admobid = {
 					banner: 'ca-app-pub-5744843625528542/4449323713', // or DFP format "/6253334/dfp_example_ad"
-					interstitial: ''
+					interstitial: 'ca-app-pub-5744843625528542/7579196115'
 				};
 			}/* else { // for windows phone
 				admobid = {
@@ -330,8 +335,27 @@ function selectCategory( el, id ) {
 		$('#category-list .selected').removeClass('selected');
 		$(el).addClass('selected');
 		var $desc = $('#category-description');
-		$desc.html( '<h2>' + category.title + '</h2><p>' + category.description + '</p>' );
+		$desc.slideUp( 150, function() {
+			$(this).html( '<h2>' + category.title + '</h2><p>' + category.description + '</p>' ).slideDown(150);
+		} );
 		$('#select-category-button').addClass('active');
+		$('#select-category-button').removeClass('button-disabled');
+	} );
+}
+
+function doCountdown() {
+	var animSpeed = 1000;
+	var $countdown = $('#game-countdown');
+	$countdown.text('3').show().fadeOut( animSpeed, function() {
+		$countdown.text('2').show().fadeOut( animSpeed, function() {
+			$countdown.text('1').show().fadeOut( animSpeed, function() {
+				$countdown.addClass('go').text('go!').show();
+				setTimeout( function() {
+					changeScreen('game');
+					$countdown.removeClass('go').hide();
+				}, animSpeed );
+			} );
+		} );
 	} );
 }
 
@@ -342,19 +366,7 @@ function selectedCategory() {
 			trackEvent( function() {}, function() {}, 'Category', 'Selected', category.title, 1 );
 			$('#game-category').html( category.title );
 			fadeOut('#categories-elements');
-			var animSpeed = 1000;
-			var $countdown = $('#game-countdown');
-			$countdown.text('3').show().fadeOut( animSpeed, function() {
-				$countdown.text('2').show().fadeOut( animSpeed, function() {
-					$countdown.text('1').show().fadeOut( animSpeed, function() {
-						$countdown.addClass('go').text('go!').show();
-						setTimeout( function() {
-							changeScreen('game');
-							$countdown.removeClass('go').hide();
-						}, animSpeed );
-					} );
-				} );
-			} );
+			doCountdown();
 		} );
 	}
 }
@@ -568,6 +580,10 @@ function submitWord() {
 	}
 }
 
+var startColorRed = 234;
+var startColorGreen = 236;
+var startColorBlue = 238;
+
 function addWordToList( word, score ) {
 	var entryHeight = ( screen.width < 768 ) ? '41px' : '4.05rem';
 	var speed = 500;
@@ -578,23 +594,33 @@ function addWordToList( word, score ) {
 		var outputScore = '0';
 	}
 	var $entry = $('<div class="word-entry ' + status + '-word"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight });
-	$('#entries').append( $entry );
+	var entryCount = $('#entries .word-entry').length + 1;
+	var newHeight = entryCount * ( parseInt( entryHeight, 10 ) );
+	var $entries = $('#entries');
+	$entries.css( 'height', newHeight + 'px' );
+	$('#entries-container')[0].scrollTop = newHeight;
+	$entries.append( $entry );
 	setTimeout( function() {
-		var entryCount = $('#entries .word-entry').length;
-		$('#entries .word-entry').each( function( i, previousEntry ) {
-			var opacity = $(previousEntry).css('opacity');
-			if ( opacity > 0.5 ) {
-				opacity -= 0.12;
-			}
+		$('.word-entry',$entries).each( function( i, previousEntry ) {
+			var index = ( entryCount - i ) - 1;
+			var r = Math.max( 153 - ( index * 3 ), startColorRed - ( index * 17 ) );
+			var g = Math.max( 162 - ( index * 2 ), startColorGreen - ( index * 14 ) );
+			var b = Math.max( 174 - ( index * 1 ), startColorBlue - ( index * 11 ) );
 			$(previousEntry).animate( {
 				bottom: '+=' + entryHeight,
-				opacity: opacity
+				backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')'
 			}, speed, function() {
 				if ( i == ( entryCount - 1 ) ) {
-					$('#entries .word-entry:last').css({opacity:1});
+					$('.word-entry:last',$entries).css({backgroundColor:'#eaecee'});
+					/*
 					setTimeout( function() {
-						gameEntriesScroller.refresh();
-					}, 0 );
+						if ( gameEntriesScroller ) {
+							gameEntriesScroller.refresh();
+						} else {
+							gameEntriesScroller = new IScroll( '#entries-viewport', { preventDefault: false } );
+						}
+					}, 100 );
+					*/
 				}
 			} );
 			$('.word-entry-inner',$entry).addClass('new-entry');
@@ -628,7 +654,6 @@ function doSubmitWord( word ) {
 						submitWordEnabled = true;
 					}, 500 );
 				}, function( tx, e ) {
-					console.log('setting submitWordEnabled to true 2');
 					setTimeout( function() {
 						submitWordEnabled = true;
 					}, 500 );
@@ -720,6 +745,9 @@ function getNextLetter() {
 
 function gameFinished() {
 	timer.stop();
+	if( typeof AdMob != 'undefined' ) {
+		AdMob.showInterstitial();
+	}
 	currentScore = parseInt( currentScore, 10 );
 	trackEvent( function() {}, function() {}, 'Game', 'Completed', $('#game-category').text(), currentScore );
 	gameEnabled = false;
@@ -815,7 +843,7 @@ function changeScreen( screen ) {
 			break;
 		case 'categories':
 			fadeIn('#categories-elements');
-			categoriesScroller = new iScroll( 'category-list-container', { hScrollbar: false, vScrollbar: false } );
+			categoriesScroller = new IScroll( '#category-list-container', { preventDefault: false } );
 			break;
 		case 'highscores':
 			trackEvent( function() {}, function() {}, 'Screen', 'Viewed', 'High Scores', 1 );
@@ -850,10 +878,17 @@ function startGame() {
 	$('#game-complete-panel').hide();
 	$('#facebookSharedMsg').hide();
 	$('#game-complete-facebook-button').show();
-	setTimeout( function() {
-		gameEntriesScroller = new iScroll( 'entries-viewport', { hScrollbar: false, vScrollbar: false } );
-	}, 500 );
+	// reset game iscroll
+	gameEntriesScroller = false;
+	// set height of entries area
+	var height = ( $('#word-entry').offset().top - $('#game-header').height() ) + 'px';
+	$('#entries-viewport, #entries-container').css( 'height', height );
+	$('#entries').css( 'min-height', height );
 	gameEnabled = true;
+	// get an ad ready
+	if( typeof AdMob != 'undefined' ) {
+		AdMob.prepareInterstitial({adId:admobid.interstitial, autoShow:false});
+	}
 }
 
 function backToHome() {
@@ -929,4 +964,16 @@ function initHighScoreScreen() {
 			$('#highscoresTable').html( html );
 		} );
 	} );
+}
+
+function passEverything() {
+	var its = 0;
+	function s() {
+		if ( its < 25 ) {
+		   passWord();
+		   its++;
+		   setTimeout( s, 500 );
+		}
+	}
+	s();
 }

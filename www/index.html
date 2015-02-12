@@ -58,11 +58,10 @@
 					<div id="category-description">
 					</div>
 					<div id="category-button-container">
-						<button id="select-category-button" class="button button2 button-wide">PLAY!</button>
+						<button id="select-category-button" class="button button2 button-disabled button-wide">PLAY!</button>
 					</div>
 				</div>
 			</div>
-			<div id="game-countdown">3</div>
         </div>
 		
 		<!-- GAME SCREEN -->
@@ -79,7 +78,10 @@
 				</div>
 				<div id="keyboard-container">
 					<div id="entries-viewport">
-						<div id="entries"></div>
+						<div id="entries-container">
+							<div id="entries">
+							</div>
+						</div>
 					</div>
 					<div id="word-entry">
 						<div id="current-letter"></div>
@@ -111,9 +113,10 @@
 						You scored <span></span> points!
 					</div>
 					<div id="game-complete-buttons">
-						<button id="game-complete-facebook-button" class="button button1 button-wide">Post to Facebook!</button>
+						<button id="game-complete-facebook-button" class="button button-facebook button-wide">Post to Facebook!</button>
 						<div id="facebookSharedMsg">Shared!</div>
 						<button id="game-complete-play-again-button" class="button button2 button-wide">Play Again!</button>
+						<button id="game-complete-another-cat-button" class="button button1 button-wide">Choose Another Category</button>
 					</div>
 				</div>
 			</div>
@@ -205,6 +208,9 @@
 			</div>
         </div>
 		
+		<!-- GAME COUNTDOWN -->
+		<div id="game-countdown">3</div>
+		
 		<div id="confirm-modal">
 			<div id="confirm-modal-icon">!</div>
 			<div id="confirm-modal-title"></div>
@@ -218,6 +224,7 @@
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+        <script type="text/javascript" src="js/jquery-color.js"></script>
         <script type="text/javascript" src="js/data.js"></script>
         <script type="text/javascript" src="js/stopwatch.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
