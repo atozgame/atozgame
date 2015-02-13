@@ -13,6 +13,7 @@ var gameEntriesScroller, categoriesScroller;
 var passEnabled = true;
 var submitWordEnabled = true;
 var gaPlugin;
+var admobid = {};
 var letters = new Array();
 letters['Q'] = 10;
 letters['W'] = 5;
@@ -210,7 +211,6 @@ var app = {
     onDeviceReady: function() {
 		// select the right Ad Id according to platform
 		if( AdMob ) {
-			var admobid = {};
 			if( /(android)/i.test(navigator.userAgent) ) { // for android
 				admobid = {
 					banner: 'ca-app-pub-5744843625528542/1436981712', // or DFP format "/6253334/dfp_example_ad"
