@@ -359,6 +359,7 @@ strong, b {
 	overflow-x: hidden;
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
+	-webkit-backface-visibility: hidden;
 }
 #entries {
 	width: 100%;
@@ -373,7 +374,6 @@ strong, b {
 	line-height: 40px;
 	perspective: 1000;
 	-webkit-perspective: 1000;
-	-webkit-backface-visibility: hidden;
 }
 .word-entry-inner {
 	width: 92%;
