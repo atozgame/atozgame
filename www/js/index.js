@@ -12,6 +12,7 @@ var gameEnabled = false;
 var gameEntriesScroller, categoriesScroller;
 var passEnabled = true;
 var submitWordEnabled = true;
+var gameEntriesContainerHeight = 0;
 var gaPlugin;
 var admobid = {};
 var letters = new Array();
@@ -595,7 +596,7 @@ function addWordToList( word, score ) {
 	}
 	var $entry = $('<div class="word-entry ' + status + '-word"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight });
 	var entryCount = $('#entries .word-entry').length + 1;
-	var newHeight = entryCount * ( parseInt( entryHeight, 10 ) );
+	var newHeight = Math.max( gameEntriesContainerHeight, entryCount * ( parseInt( entryHeight, 10 ) ) );
 	var $entries = $('#entries');
 	$entries.css( 'height', newHeight + 'px' );
 	$('#entries-container')[0].scrollTop = newHeight;
@@ -609,20 +610,7 @@ function addWordToList( word, score ) {
 			$(previousEntry).animate( {
 				bottom: '+=' + entryHeight,
 				backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')'
-			}, speed, function() {
-				if ( i == ( entryCount - 1 ) ) {
-					$('.word-entry:last',$entries).css({backgroundColor:'#eaecee'});
-					/*
-					setTimeout( function() {
-						if ( gameEntriesScroller ) {
-							gameEntriesScroller.refresh();
-						} else {
-							gameEntriesScroller = new IScroll( '#entries-viewport', { preventDefault: false } );
-						}
-					}, 100 );
-					*/
-				}
-			} );
+			}, speed );
 			$('.word-entry-inner',$entry).addClass('new-entry');
 		} );
 	}, 100 );
@@ -881,9 +869,10 @@ function startGame() {
 	// reset game iscroll
 	gameEntriesScroller = false;
 	// set height of entries area
-	var height = ( $('#word-entry').offset().top - $('#game-header').height() ) + 'px';
-	$('#entries-viewport, #entries-container').css( 'height', height );
-	$('#entries').css( 'min-height', height );
+	gameEntriesContainerHeight = ( $('#word-entry').offset().top - $('#game-header').height() ) + 'px';
+	$('#entries-viewport, #entries-container').css( 'height', gameEntriesContainerHeight );
+	$('#entries').css( 'min-height', gameEntriesContainerHeight );
+	gameEntriesContainerHeight = parseInt( gameEntriesContainerHeight, 10 );
 	gameEnabled = true;
 	// get an ad ready
 	if( typeof AdMob != 'undefined' ) {
