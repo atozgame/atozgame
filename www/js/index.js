@@ -596,7 +596,7 @@ function addWordToList( word, score ) {
 	}
 	var $entry = $('<div class="word-entry ' + status + '-word"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight });
 	var entryCount = $('#entries .word-entry').length + 1;
-	var newHeight = Math.max( gameEntriesContainerHeight, entryCount * ( parseInt( entryHeight, 10 ) ) );
+	var newHeight = entryCount * ( parseInt( entryHeight, 10) );
 	var $entries = $('#entries');
 	$entries.css( 'height', newHeight + 'px' );
 	$('#entries-container')[0].scrollTop = newHeight;
