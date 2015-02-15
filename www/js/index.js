@@ -631,7 +631,6 @@ var startColorGreen = 236;
 var startColorBlue = 238;
 
 function addWordToList( word, score ) {
-alert( $(window).width() );
 	var entryHeight = ( $(window).width() < 768 ) ? '41px' : '4.05rem';
 	var speed = 500;
 	var status = ( score > 0 ? 'valid' : 'invalid' );
