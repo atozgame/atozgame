@@ -661,7 +661,7 @@ function addWordToList( word, score ) {
 			$(previousEntry).animate( {
 				bottom: '+=' + entryHeight,
 				backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')'
-			}, speed );
+			}, speed ).width(); // .width to force redraw
 			$('.word-entry-inner',$entry).addClass('new-entry');
 		} );
 	//}, 100 );
