@@ -73,6 +73,36 @@ strong, b {
 	background: #fff url(../img/v2/logo.png) no-repeat center center;
 }
 
+#progress-bar {
+	text-align: center;
+	position: absolute;
+	bottom: 80px;
+	width: 100%;
+}
+#progress-bar-text {
+	text-transform: uppercase;
+	color: #2d3c53;
+	line-height: 1.3rem;
+	font-size: 0.75rem;
+}
+#progress-bar-bar {
+	border: 1px solid #2d3c53;
+	height: 4px;
+	overflow: hidden;
+	width: 50%;
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+}
+#progress-bar-bar-progress {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 0;
+	background: #2d3c53;
+}
+
 .footer {
 	position: absolute;
 	bottom: 50px; /* to account for the banner ad */
@@ -835,6 +865,7 @@ strong, b {
 #highscoresTable table {
 	width: 100%;
 	margin-top: 1em;
+	margin-bottom: 100px;
 }
 #highscoresTable table th, #highscoresTable table td {
 	padding: 8px;

@@ -71,6 +71,11 @@ function toggleSounds() {
 	$('.sound-toggle').toggleClass('muted');
 }
 
+function updateProgressBar( text, percent ) {
+	$('#progress-bar-text').html( text );
+	$('#progress-bar-bar-progress').animate( { width: percent + '%' }, 250 );
+}
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -281,16 +286,25 @@ function updateDatabase( callback ) {
 			// any ALTER statements must be wrapped in "if ( getCurrentDBVersion() < xx ) {"
 			// tx.executeSql('ALTER TABLE highscores ADD COLUMN seconds_taken',[]);
 			// insert category data
+			updateProgressBar( 'Updating categories...', 10 );
 			for ( var c in gameData.categories ) {
 				tx.executeSql('INSERT INTO category ( id, title, description ) VALUES ( ?, ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title, gameData.categories[c].description ] );
 			}
+			updateProgressBar( 'Updating words...', 40 );
+			setTimeout( function() {
+				updateProgressBar( 'Updating words...', 70 );
+				setTimeout( function() {
+					updateProgressBar( 'Nearly there...', 90 );
+				}, 3000 );
+			}, 2000 );
 			// insert word data
 			for ( var w in gameData.words ) {
 				tx.executeSql('INSERT INTO word ( id, category_id, word, score ) VALUES ( ?, ?, ?, ? ) ', [ parseInt( gameData.words[w].id, 10 ), parseInt( gameData.words[w].category_id, 10 ), gameData.words[w].word, parseInt( gameData.words[w].score, 10 ) ] );
 			}
 			// update database version
 			setCurrentDBVersion( gameData.version );
-			callback();
+			updateProgressBar( 'Get ready!', 100 );
+			//callback();
 		} );
 	} else {
 		callback();
