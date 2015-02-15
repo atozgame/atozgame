@@ -14,6 +14,7 @@ var passEnabled = true;
 var submitWordEnabled = true;
 var gameEntriesContainerHeight = 0;
 var passText = '[PASS]';
+var hideModalOnOK = true;
 var gaPlugin;
 var admobid = {};
 var letters = new Array();
@@ -587,7 +588,7 @@ function disputeWord( word ) {
 		'Wait, this <strong>IS</strong> a word!',
 		'If you think ' + word + ' should be added to the database for this category, go ahead and let us know!',
 		function() {
-			showModal();
+			hideModalOnOK = false;
 			doDisputeWord( word );
 		},
 		function() {
@@ -652,19 +653,21 @@ function addWordToList( word, score ) {
 	$entries.css( 'height', newHeight + 'px' );
 	$('#entries-container')[0].scrollTop = newHeight;
 	$entries.append( $entry );
-	setTimeout( function() {
-		$('.word-entry',$entries).each( function( i, previousEntry ) {
-			var index = ( entryCount - i ) - 1;
-			var r = Math.max( 153 - ( index * 3 ), startColorRed - ( index * 17 ) );
-			var g = Math.max( 162 - ( index * 2 ), startColorGreen - ( index * 14 ) );
-			var b = Math.max( 174 - ( index * 1 ), startColorBlue - ( index * 11 ) );
-			$(previousEntry).animate( {
-				bottom: '+=' + entryHeight,
-				backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')'
-			}, speed );
-			$('.word-entry-inner',$entry).addClass('new-entry');
-		} );
-	}, 10 );
+	$('.word-entry',$entries).each( function( i, previousEntry ) {
+		var index = ( entryCount - i ) - 1;
+		var r = Math.max( 153 - ( index * 3 ), startColorRed - ( index * 17 ) );
+		var g = Math.max( 162 - ( index * 2 ), startColorGreen - ( index * 14 ) );
+		var b = Math.max( 174 - ( index * 1 ), startColorBlue - ( index * 11 ) );
+		$(previousEntry).animate( {
+			bottom: '+=' + entryHeight,
+			backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')'
+		}, speed );
+		// next 3 lines are to prevent android render issue
+		previousEntry.style.display = 'none';
+		previousEntry.offsetHeight;
+		previousEntry.style.display = '';
+		$('.word-entry-inner',$entry).addClass('new-entry');
+	} );
 	getNextLetter();
 }
 
@@ -860,11 +863,15 @@ function showModal( title, message, icon, okCallback, cancelCallback ) {
 		$('#confirm-modal-message').html( message );
 		$('#confirm-modal-ok').off('tap').on( 'tap', function(e) {
 			e.preventDefault();
-			hideModal();
 			okCallback();
+			if ( hideModalOnOK ) {
+				hideModal();
+			}
+			hideModalOnOK = true;
 		} );
 		$('#confirm-modal-cancel').off('tap').on( 'tap', function(e) {
 			e.preventDefault();
+			hideModalOnOK = true;
 			hideModal();
 			cancelCallback();
 		} );
