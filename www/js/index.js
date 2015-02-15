@@ -652,7 +652,7 @@ function addWordToList( word, score ) {
 	$entries.css( 'height', newHeight + 'px' );
 	$('#entries-container')[0].scrollTop = newHeight;
 	$entries.append( $entry );
-	//setTimeout( function() {
+	setTimeout( function() {
 		$('.word-entry',$entries).each( function( i, previousEntry ) {
 			var index = ( entryCount - i ) - 1;
 			var r = Math.max( 153 - ( index * 3 ), startColorRed - ( index * 17 ) );
@@ -661,10 +661,10 @@ function addWordToList( word, score ) {
 			$(previousEntry).animate( {
 				bottom: '+=' + entryHeight,
 				backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')'
-			}, speed ).width(); // .width to force redraw
+			}, speed );
 			$('.word-entry-inner',$entry).addClass('new-entry');
 		} );
-	//}, 100 );
+	}, 10 );
 	getNextLetter();
 }
 
