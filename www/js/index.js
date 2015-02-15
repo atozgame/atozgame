@@ -304,7 +304,7 @@ function updateDatabase( callback ) {
 			// update database version
 			setCurrentDBVersion( gameData.version );
 			updateProgressBar( 'Get ready!', 100 );
-			//callback();
+			callback();
 		} );
 	} else {
 		callback();
