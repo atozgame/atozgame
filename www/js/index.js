@@ -612,12 +612,13 @@ function doDisputeWord( word ) {
 			'json'
 		)
 		.fail( function(e) {
-			console.dir(e);
 			confirmModal(
 				'Uh-oh...',
 				'Looks like something went wrong... Wanna try again?',
 				function() {
-					disputeWord( word );
+					hideModalOnOK = false;
+					$('#confirm-modal-message').html( 'Re-trying...' );
+					doDisputeWord( word );
 				},
 				function() {
 					hideModal();
