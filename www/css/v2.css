@@ -359,7 +359,6 @@ strong, b {
 	overflow-x: hidden;
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
-	-webkit-backface-visibility: hidden;
 }
 #entries {
 	width: 100%;
@@ -372,8 +371,10 @@ strong, b {
 	left: 0;
 	margin-bottom: 1px;
 	line-height: 40px;
-	perspective: 1000;
-	-webkit-perspective: 1000;
+	perspective: 1000px;
+	-webkit-perspective: 1000px;
+	-webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
 }
 .word-entry-inner {
 	width: 92%;
@@ -390,11 +391,10 @@ strong, b {
 	height: 0;
 }
 .new-entry {
-	opacity: 1;
 	width: 100%;
 	height: 100%;
 	left: 0;
-	transform: rotateX(0deg);
+	transform: rotateX(0deg) !important;
 	-webkit-transform: rotateX(0deg) !important;
 }
 .word-entry-inner div {
@@ -420,6 +420,9 @@ strong, b {
 }
 .valid-word .word-entry-inner span {
 	color: #ff0084;
+}
+.disputable .word-entry-inner span {
+	background: url(../img/v2/disputeicon.png) no-repeat 80% center;
 }
 .header-bar {
 	height: 2.5rem;

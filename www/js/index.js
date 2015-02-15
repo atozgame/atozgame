@@ -13,6 +13,7 @@ var gameEntriesScroller, categoriesScroller;
 var passEnabled = true;
 var submitWordEnabled = true;
 var gameEntriesContainerHeight = 0;
+var passText = '[PASS]';
 var gaPlugin;
 var admobid = {};
 var letters = new Array();
@@ -581,11 +582,56 @@ function submitWord() {
 	}
 }
 
+function disputeWord( word ) {
+	confirmModal(
+		'Wait, this <strong>IS</strong> a word!',
+		'If you think ' + word + ' should be added to the database for this category, go ahead and let us know!',
+		function() {
+			showModal();
+			doDisputeWord( word );
+		},
+		function() {
+		}
+	);
+}
+
+function doDisputeWord( word ) {
+	getCurrentCategory( function( category ) {
+		$.post(
+			'http://www.atozgame.co.uk/disputeword.php',
+			{
+				word: word,
+				category: category.title
+			},
+			function( data ) {
+				hideModal();
+				alertModal( 'Thanks!', 'Your wisdom has been received!', function() { } );
+				setTimeout( hideModal, 2000 );
+			},
+			'json'
+		)
+		.fail( function(e) {
+			console.dir(e);
+			confirmModal(
+				'Uh-oh...',
+				'Looks like something went wrong... Wanna try again?',
+				function() {
+					disputeWord( word );
+				},
+				function() {
+					hideModal();
+				}
+			);
+		} );
+	} );
+}
+
 var startColorRed = 234;
 var startColorGreen = 236;
 var startColorBlue = 238;
 
 function addWordToList( word, score ) {
+alert( screen.width );
 	var entryHeight = ( screen.width < 768 ) ? '41px' : '4.05rem';
 	var speed = 500;
 	var status = ( score > 0 ? 'valid' : 'invalid' );
@@ -594,7 +640,13 @@ function addWordToList( word, score ) {
 	} else {
 		var outputScore = '0';
 	}
-	var $entry = $('<div class="word-entry ' + status + '-word"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight });
+	var disputable = ( ( score == 0 ) && ( word != passText ) ) ? ' disputable' : '';
+	var $entry = $('<div class="word-entry ' + status + '-word' + disputable + '"><div class="word-entry-inner"><div>' + word + '</div><span>' + outputScore + '</span></div></div>').css({bottom:'-' + entryHeight });
+	if ( ( score == 0 ) && ( word != passText ) ) {
+		$entry.click( function() {
+			disputeWord( word );
+		} );
+	}
 	var entryCount = $('#entries .word-entry').length + 1;
 	var newHeight = entryCount * ( parseInt( entryHeight, 10) );
 	var $entries = $('#entries');
@@ -659,7 +711,7 @@ function doSubmitWord( word ) {
 function passWord() {
 	if ( passEnabled ) {
 		passEnabled = false;
-		addWordToList( '[PASS]', 0 );
+		addWordToList( passText, 0 );
 		setTimeout( function() {
 			passEnabled = true;
 		}, 500 );
@@ -794,28 +846,34 @@ function alertModal( title, message, okCallback ) {
 
 function confirmModal( title, message, okCallback, cancelCallback ) {
 	$('#confirm-modal-cancel').show();
-	showModal( title, message, '?', okCallback );
+	showModal( title, message, '?', okCallback, cancelCallback );
+}
+
+function hideModal() {
+	$('#confirm-modal').hide();
 }
 
 function showModal( title, message, icon, okCallback, cancelCallback ) {
-	fadeOut('.screen:visible');
-	$('#confirm-modal-icon').html( icon );
-	$('#confirm-modal-title').html( title );
-	$('#confirm-modal-message').html( message );
-	$('#confirm-modal-ok').off('tap').on( 'tap', function(e) {
-		e.preventDefault();
-		hideConfirmModal();
-		okCallback();
-	} );
-	$('#confirm-modal-cancel').off('tap').on( 'tap', function(e) {
-		e.preventDefault();
-		hideConfirmModal();
-		cancelCallback();
-	} );
+	if ( title && message ) {
+		fadeOut('.screen:visible');
+		$('#confirm-modal-icon').html( icon );
+		$('#confirm-modal-title').html( title );
+		$('#confirm-modal-message').html( message );
+		$('#confirm-modal-ok').off('tap').on( 'tap', function(e) {
+			e.preventDefault();
+			hideModal();
+			okCallback();
+		} );
+		$('#confirm-modal-cancel').off('tap').on( 'tap', function(e) {
+			e.preventDefault();
+			hideModal();
+			cancelCallback();
+		} );
+	}
 	$('#confirm-modal').show();
 }
 
-function hideConfirmModal() {
+function hideModal() {
 	$('#confirm-modal').hide();
 	fadeIn('.screen:visible');
 }
@@ -831,7 +889,7 @@ function changeScreen( screen ) {
 			break;
 		case 'categories':
 			fadeIn('#categories-elements');
-			categoriesScroller = new IScroll( '#category-list-container', { preventDefault: false } );
+			categoriesScroller = new iScroll( 'category-list-container' );
 			break;
 		case 'highscores':
 			trackEvent( function() {}, function() {}, 'Screen', 'Viewed', 'High Scores', 1 );
