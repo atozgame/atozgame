@@ -355,6 +355,7 @@ strong, b {
 	padding-right: 1px;
 	border-right: 1px solid #333;
 	float: left;
+	white-space: pre;
 }
 #word-entry button {
 	width: 20%;
@@ -435,6 +436,7 @@ strong, b {
 	height: 100%;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .word-entry-inner div:first-letter, #word:first-letter {
 	color: #ff0084;
@@ -904,6 +906,14 @@ thead th {
 	max-width: 100%;
 }
 
+.mask {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
 #confirm-modal, #game-complete-panel {
 	position: absolute;
 	top: 25%;
@@ -911,7 +921,6 @@ thead th {
 	box-sizing: border-box;
 	width: 65%;
 	text-align: center;
-	display: none;
 }
 #confirm-modal-icon {
 	font-size: 106px;

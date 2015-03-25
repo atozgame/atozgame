@@ -278,7 +278,7 @@ function updateDatabase( callback ) {
 			tx.executeSql('DROP TABLE IF EXISTS category',[]);
 			tx.executeSql('DROP TABLE IF EXISTS word',[]);
 			// create the category table
-			tx.executeSql('CREATE TABLE category ( id unique, title, description )',[]);
+			tx.executeSql('CREATE TABLE category ( id unique, title, description, disputable )',[]);
 			// create the word table
 			tx.executeSql('CREATE TABLE word ( id unique, category_id, word, score )',[]);
 			// create high score table if necessary
@@ -288,7 +288,7 @@ function updateDatabase( callback ) {
 			// insert category data
 			updateProgressBar( 'Updating categories...', 10 );
 			for ( var c in gameData.categories ) {
-				tx.executeSql('INSERT INTO category ( id, title, description ) VALUES ( ?, ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title, gameData.categories[c].description ] );
+				tx.executeSql('INSERT INTO category ( id, title, description, disputable ) VALUES ( ?, ?, ?, ? ) ', [ parseInt( gameData.categories[c].id, 10 ), gameData.categories[c].title, gameData.categories[c].description, parseInt( gameData.categories[c].disputable, 10 ) ] );
 			}
 			updateProgressBar( 'Updating words...', 40 );
 			setTimeout( function() {
@@ -362,6 +362,8 @@ function selectCategory( el, id ) {
 
 function doCountdown() {
 	var animSpeed = 1000;
+	var $countdownWrapper = $('#game-countdown-wrapper');
+	$countdownWrapper.show();
 	var $countdown = $('#game-countdown');
 	$countdown.text('3').show().fadeOut( animSpeed, function() {
 		$countdown.text('2').show().fadeOut( animSpeed, function() {
@@ -370,6 +372,7 @@ function doCountdown() {
 				setTimeout( function() {
 					changeScreen('game');
 					$countdown.removeClass('go').hide();
+					$countdownWrapper.hide();
 				}, animSpeed );
 			} );
 		} );
@@ -598,17 +601,25 @@ function submitWord() {
 }
 
 function disputeWord( word ) {
-	confirmModal(
-		'Wait, this <strong>IS</strong> a word!',
-		'If you think ' + word + ' should be added to the database for this category, go ahead and let us know!',
-		function() {
-			hideModalOnOK = false;
-			doDisputeWord( word );
-		},
-		function() {
+	getCurrentCategory( function( category ) {
+		if ( category.disputable ) {
+			confirmModal(
+				'Wait, this <strong>IS</strong> a word!',
+				'If you think ' + word + ' should be added to the database for this category, go ahead and let us know!',
+				function() {
+					hideModalOnOK = false;
+					doDisputeWord( word );
+				},
+				function() {
+				}
+			);
+		} else {
+			alertModal( 'Sorry...', 'This category is fact-based and so words cannot be suggested for it.', function() { }, ':(' );
 		}
-	);
+	} );
 }
+
+var disputeWordsCompleteIntrvl;
 
 function doDisputeWord( word ) {
 	getCurrentCategory( function( category ) {
@@ -619,9 +630,18 @@ function doDisputeWord( word ) {
 				category: category.title
 			},
 			function( data ) {
+				var awardPoints = function() {
+					updateScore( 5 );
+				}
 				hideModal();
-				alertModal( 'Thanks!', 'Your wisdom has been received!', function() { } );
-				setTimeout( hideModal, 2000 );
+				alertModal( 'Thanks!', 'Your wisdom has been received!', function() {
+					clearTimeout( disputeWordsCompleteIntrvl );
+					awardPoints();
+				} );
+				disputeWordsCompleteIntrvl = setTimeout( function() {
+					hideModal();
+					awardPoints();
+				}, 2000 );
 			},
 			'json'
 		)
@@ -694,7 +714,12 @@ function doSubmitWord( word ) {
 				var originalWord = word;
 				word = word.replace(/ /g,'');
 				word = word.replace(/-/g,'');
-				tx.executeSql( 'SELECT score FROM word WHERE category_id = ? AND REPLACE( REPLACE( word, " ", "" ), "-", "" ) = ?', [ currentCategoryId, word ], function( tx, results ) {
+				if ( word.substr(-1) == 'S' ) {
+					wordPlural = word.substr(0,word.length-1);
+				} else {
+					wordPlural = word + 'S';
+				}
+				tx.executeSql( 'SELECT score FROM word WHERE category_id = ? AND ( ( REPLACE( REPLACE( word, " ", "" ), "-", "" ) = ? ) OR ( REPLACE( REPLACE( word, " ", "" ), "-", "" ) = ? ) ) LIMIT 1 ', [ currentCategoryId, word, wordPlural ], function( tx, results ) {
 					var score = 0;
 					if ( results.rows.length > 0 ) {
 						if ( results.rows.item(0).score ) {
@@ -856,9 +881,12 @@ function quitGame() {
 	}
 }
 
-function alertModal( title, message, okCallback ) {
+function alertModal( title, message, okCallback, icon ) {
+	if ( typeof icon == 'undefined' ) {
+		icon = '!';
+	}
 	$('#confirm-modal-cancel').hide();
-	showModal( title, message, '!', okCallback, function() {} );
+	showModal( title, message, icon, okCallback, function() {} );
 }
 
 function confirmModal( title, message, okCallback, cancelCallback ) {
@@ -867,7 +895,7 @@ function confirmModal( title, message, okCallback, cancelCallback ) {
 }
 
 function hideModal() {
-	$('#confirm-modal').hide();
+	$('#confirm-modal-wrapper').hide();
 }
 
 function showModal( title, message, icon, okCallback, cancelCallback ) {
@@ -891,11 +919,11 @@ function showModal( title, message, icon, okCallback, cancelCallback ) {
 			cancelCallback();
 		} );
 	}
-	$('#confirm-modal').show();
+	$('#confirm-modal-wrapper').show();
 }
 
 function hideModal() {
-	$('#confirm-modal').hide();
+	$('#confirm-modal-wrapper').hide();
 	fadeIn('.screen:visible');
 }
 
@@ -941,6 +969,7 @@ function startGame() {
 	// reset the current letter
 	currentLetter = '';
 	getNextLetter();
+	fadeIn('#screen-game');
 	fadeIn('#game-elements');
 	$('#game-complete-panel').hide();
 	$('#facebookSharedMsg').hide();
