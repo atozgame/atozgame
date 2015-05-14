@@ -998,7 +998,7 @@ function postScoreToFacebook() {
 		window.plugins.socialsharing.shareViaFacebookWithPasteMessageHint(
 			'I just scored ' + currentScore + ' on the ' + category.title + ' category! #AtoZGame',
 			'http://www.atozgame.co.uk/images/fbpost.png', /* image */
-			'http://www.atozgame.co.uk/', /* url */
+			'http://www.atozgame.co.uk', /* url */
 			'Tip: you can "Paste" here to use a message we have already made for you!',
 			function( shared ) {
 				if ( shared ) {
