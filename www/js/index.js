@@ -997,8 +997,8 @@ function postScoreToFacebook() {
 		trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Clicked', 1 );
 		window.plugins.socialsharing.shareViaFacebook(
 			'I just scored ' + currentScore + ' on the ' + category.title + ' category! #AtoZGame',
-			null,
-			null,
+			'http://www.atozgame.co.uk/images/fbpost.png', /* image */
+			'http://www.atozgame.co.uk/', /* url */
 			function( shared ) {
 				if ( shared ) {
 					trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Shared', 1 );
