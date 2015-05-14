@@ -995,10 +995,11 @@ function backToHome() {
 function postScoreToFacebook() {
 	getCurrentCategory( function( category ) {
 		trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Clicked', 1 );
-		window.plugins.socialsharing.shareViaFacebook(
+		window.plugins.socialsharing.shareViaFacebookWithPasteMessageHint(
 			'I just scored ' + currentScore + ' on the ' + category.title + ' category! #AtoZGame',
 			'http://www.atozgame.co.uk/images/fbpost.png', /* image */
 			'http://www.atozgame.co.uk/', /* url */
+			'Tip: you can "Paste" here to use a message we have already made for you!',
 			function( shared ) {
 				if ( shared ) {
 					trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Shared', 1 );
