@@ -995,21 +995,19 @@ function backToHome() {
 function postScoreToFacebook() {
 	getCurrentCategory( function( category ) {
 		trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Clicked', 1 );
-		window.plugins.socialsharing.shareViaFacebookWithPasteMessageHint(
+		shareToFacebook(
 			'I just scored ' + currentScore + ' on the ' + category.title + ' category! #AtoZGame',
 			'http://www.atozgame.co.uk/images/fbpost.png', /* image */
 			'http://www.atozgame.co.uk', /* url */
-			'Tip: you can "Paste" here to use a message we have already made for you!',
-			function( shared ) {
-				if ( shared ) {
+			function( response ) {
+				if ( response.post_id ) {
 					trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Shared', 1 );
 					$('#facebookSharedMsg').html('Shared!').show();
 					$('#game-complete-facebook-button').hide();
 				}
 			},
-			function() {
-				trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Failed', 1 );
-				$('#facebookSharedMsg').html('Share failed :(').show();
+			function( error ) {
+				trackEvent( function() {}, function() {}, 'Social', 'Facebook', 'Failed: ' + msg, 1 );
 			}
 		);
 	} );
@@ -1076,21 +1074,17 @@ function passEverything() {
 	s();
 }
 
-function shareToFacebook( message ) {
+function shareToFacebook( message, image, url, success, failure ) {
 	facebookConnectPlugin.showDialog(
 		{
 			method: 'feed',
-			link: 'http://www.atozgame.co.uk/',
+			link: url,
 			name: 'The A to Z Game App',
 			caption: 'Download from atozgame.co.uk!',
 			description: message,
-			picture: 'http://www.atozgame.co.uk/images/fbpost.png'
+			picture: image
 		},
-		function(response){
-			alert('shared');
-		},
-		function(response){
-			alert('error: ' + response );
-		}
+		success,
+		failure
 	);
 }
