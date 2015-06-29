@@ -48,7 +48,7 @@
     <gap:plugin name="org.apache.cordova.media" />
     <gap:plugin name="org.apache.cordova.vibration" />
     <gap:plugin name="org.apache.cordova.splashscreen" />
-	<gap:plugin name="nl.x-services.plugins.socialsharing" />
+	<!--<gap:plugin name="nl.x-services.plugins.socialsharing" />-->
 	<gap:plugin name="com.google.cordova.admob" source="plugins.cordova.io" />
 	<gap:plugin name="com.adobe.plugins.gaplugin" version="2.4.0" />
 	
@@ -62,7 +62,7 @@
 			<dict>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>1036153466409944</string>
+					<string>fb1036153466409944</string>
 				</array>
 			</dict>
 		</array>
