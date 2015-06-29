@@ -1075,3 +1075,21 @@ function passEverything() {
 	}
 	s();
 }
+
+function shareToFacebook() {
+	alert( typeof facebookConnectPlugin );
+	facebookConnectPlugin.showDialog(
+		{
+			method: 'feed',
+			link: 'http://www.atozgame.co.uk/',
+			caption: 'i just scored x out of y!',
+			picture: 'http://www.atozgame.co.uk/images/fbpost.png'
+		},
+		function(response){
+			alert('shared');
+		},
+		function(response){
+			alert('error: ' + JSON.stringify(response) );
+		}
+	);
+}
