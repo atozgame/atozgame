@@ -1076,13 +1076,14 @@ function passEverything() {
 	s();
 }
 
-function shareToFacebook() {
-	alert( typeof facebookConnectPlugin );
+function shareToFacebook( message ) {
 	facebookConnectPlugin.showDialog(
 		{
 			method: 'feed',
 			link: 'http://www.atozgame.co.uk/',
-			caption: 'i just scored x out of y!',
+			name: 'The A to Z Game App',
+			caption: 'Download from atozgame.co.uk!',
+			description: message,
 			picture: 'http://www.atozgame.co.uk/images/fbpost.png'
 		},
 		function(response){
