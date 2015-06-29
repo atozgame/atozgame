@@ -1089,7 +1089,7 @@ function shareToFacebook() {
 			alert('shared');
 		},
 		function(response){
-			alert('error: ' + JSON.stringify(response) );
+			alert('error: ' + response );
 		}
 	);
 }
