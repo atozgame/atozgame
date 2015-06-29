@@ -52,7 +52,7 @@
 	<gap:plugin name="com.google.cordova.admob" source="plugins.cordova.io" />
 	<gap:plugin name="com.adobe.plugins.gaplugin" version="2.4.0" />
 	
-	<gap:plugin name="com.phonegap.plugins.facebookconnect" version="0.11.0">
+	<gap:plugin name="com.phonegap.plugins.facebookconnect">
         <param name="APP_ID" value="1036153466409944" />
         <param name="APP_NAME" value="The A to Z Game" />
     </gap:plugin>
